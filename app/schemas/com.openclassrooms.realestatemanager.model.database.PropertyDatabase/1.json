@@ -1,0 +1,130 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "34586d927f0406cdf078d95dc91faf38",
+    "entities": [
+      {
+        "tableName": "property",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT, `price` REAL NOT NULL, `surface` REAL NOT NULL, `numberOfRooms` INTEGER NOT NULL, `description` TEXT, `photos` TEXT, `pointsOfInterest` TEXT, `isSold` INTEGER NOT NULL, `marketDate` INTEGER, `soldDate` INTEGER, `agentName` TEXT, `street` TEXT, `city` TEXT, `state` TEXT, `zipCode` TEXT, `country` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "surface",
+            "columnName": "surface",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfRooms",
+            "columnName": "numberOfRooms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos",
+            "columnName": "photos",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pointsOfInterest",
+            "columnName": "pointsOfInterest",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isSold",
+            "columnName": "isSold",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "marketDate",
+            "columnName": "marketDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "soldDate",
+            "columnName": "soldDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agentName",
+            "columnName": "agentName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address.street",
+            "columnName": "street",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address.city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address.state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address.zipCode",
+            "columnName": "zipCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address.country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '34586d927f0406cdf078d95dc91faf38')"
+    ]
+  }
+}

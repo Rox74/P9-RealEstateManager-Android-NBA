@@ -11,6 +11,12 @@ public class Photo implements Parcelable {
     public Photo() {
     }
 
+    // Constructeur avec tous les champs
+    public Photo(String uri, String description) {
+        this.uri = uri;
+        this.description = description;
+    }
+
     protected Photo(Parcel in) {
         uri = in.readString();
         description = in.readString();

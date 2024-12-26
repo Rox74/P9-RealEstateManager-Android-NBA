@@ -11,6 +11,12 @@ public class PointOfInterest implements Parcelable {
     public PointOfInterest() {
     }
 
+    // Constructeur avec tous les champs
+    public PointOfInterest(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+
     protected PointOfInterest(Parcel in) {
         name = in.readString();
         type = in.readString();

@@ -45,6 +45,24 @@ public class Property implements Parcelable {
     public Property() {
     }
 
+    // Constructeur avec tous les champs
+    public Property(String type, double price, double surface, int numberOfRooms, String description,
+                    Address address, List<Photo> photos, List<PointOfInterest> pointsOfInterest,
+                    boolean isSold, Date marketDate, Date soldDate, String agentName) {
+        this.type = type;
+        this.price = price;
+        this.surface = surface;
+        this.numberOfRooms = numberOfRooms;
+        this.description = description;
+        this.address = address;
+        this.photos = photos;
+        this.pointsOfInterest = pointsOfInterest;
+        this.isSold = isSold;
+        this.marketDate = marketDate;
+        this.soldDate = soldDate;
+        this.agentName = agentName;
+    }
+
     public Property(String type, String agentName, double price) {
         this.type = type;
         this.agentName = agentName;

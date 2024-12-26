@@ -14,6 +14,15 @@ public class Address implements Parcelable {
     public Address() {
     }
 
+    // Constructeur avec tous les champs
+    public Address(String street, String city, String state, String zipCode, String country) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
+
     protected Address(Parcel in) {
         street = in.readString();
         city = in.readString();

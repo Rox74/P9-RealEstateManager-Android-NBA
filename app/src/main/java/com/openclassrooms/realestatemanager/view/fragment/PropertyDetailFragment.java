@@ -1,11 +1,13 @@
 package com.openclassrooms.realestatemanager.view.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,13 +19,16 @@ import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.entity.Address;
 import com.openclassrooms.realestatemanager.model.entity.Property;
+import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
+import com.openclassrooms.realestatemanager.viewmodel.MapViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 
 public class PropertyDetailFragment extends Fragment {
     private static final String ARG_PROPERTY = "property";
 
     private PropertyDetailViewModel propertyDetailViewModel;
+    private MapViewModel mapViewModel;
     private RecyclerView photoRecyclerView;
     private TextView descriptionTextView;
     private TextView detailsTextView;
@@ -52,22 +57,23 @@ public class PropertyDetailFragment extends Fragment {
         PhotoAdapter photoAdapter = new PhotoAdapter();
         photoRecyclerView.setAdapter(photoAdapter);
 
-        // Initialisation du ViewModel
+        // Initialisation des ViewModels
         propertyDetailViewModel = new ViewModelProvider(this).get(PropertyDetailViewModel.class);
+        mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
 
         if (getArguments() != null && getArguments().containsKey(ARG_PROPERTY)) {
             Property property = getArguments().getParcelable(ARG_PROPERTY);
             propertyDetailViewModel.selectProperty(property);
         }
 
-        // Observation des détails de la propriété
+        // Observer les données du ViewModel
         propertyDetailViewModel.getSelectedProperty().observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
                 descriptionTextView.setText(property.description);
                 detailsTextView.setText(formatPropertyDetails(property));
                 photoAdapter.setPhotos(property.photos);
 
-                // Charger la carte (API Google Maps Static)
+                // Charger la carte via la méthode
                 loadStaticMap(property.address);
             }
         });
@@ -82,9 +88,56 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void loadStaticMap(Address address) {
-        // Exemple de chargement d'une carte statique à partir de l'adresse
-        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="
-                + address.street + "," + address.city + "&zoom=15&size=600x300&key=YOUR_API_KEY";
-        Glide.with(this).load(mapUrl).into(mapImageView); // Utilise Glide pour charger l'image
+        if (address == null || address.street == null || address.city == null || address.state == null) {
+            Log.e("PropertyDetailFragment", "Address is null or incomplete");
+            mapImageView.setImageResource(R.drawable.ic_placeholder_map);
+            return;
+        }
+
+        // Vérification de la connexion Internet
+        if (!Utils.isInternetAvailable(requireContext())) {
+            Log.e("PropertyDetailFragment", "No internet connection");
+            mapImageView.setImageResource(R.drawable.ic_offline_map);
+            return;
+        }
+
+        String fullAddress = address.street + ", " + address.city + ", " + address.state;
+
+        Log.d("PropertyDetailFragment", "Fetching coordinates for address: " + fullAddress);
+
+        mapViewModel.fetchCoordinates(fullAddress);
+
+        mapViewModel.getMapDataLiveData().observe(getViewLifecycleOwner(), response -> {
+            if (response != null) {
+                double lat = response.lat;
+                double lon = response.lon;
+
+                Log.d("PropertyDetailFragment", "Coordinates found: lat=" + lat + ", lon=" + lon);
+
+                // Construire l'URL de la carte avec style détaillé et marqueur rouge
+                String mapUrl = "https://static-maps.yandex.ru/1.x/?lang=en_US&ll="
+                        + lon + "," + lat
+                        + "&z=17&l=map&pt=" + lon + "," + lat + ",pm2rdm";
+
+                Log.d("PropertyDetailFragment", "Generated map URL: " + mapUrl);
+
+                // Charger la carte via Glide
+                Glide.with(this)
+                        .load(mapUrl)
+                        .placeholder(R.drawable.ic_placeholder_map)
+                        .error(R.drawable.ic_error_map)
+                        .into(mapImageView);
+            } else {
+                Log.e("PropertyDetailFragment", "No coordinates found for the address");
+                mapImageView.setImageResource(R.drawable.ic_error_map);
+            }
+        });
+
+        mapViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Log.e("PropertyDetailFragment", "Error fetching coordinates: " + error);
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

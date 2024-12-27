@@ -61,7 +61,7 @@ public class PropertyListFragment extends Fragment {
 
         // Propriété 1 - Condo
         Address address1 = new Address(
-                "217 W 57th St Unit 127/128",
+                "127 W 57th St",
                 "Manhattan",
                 "NY",
                 "10019",

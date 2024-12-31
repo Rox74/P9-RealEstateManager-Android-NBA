@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:layout_width="140dp"
+    android:layout_height="160dp"
+    cardview:cardElevation="4dp"
+    cardview:cardUseCompatPadding="true">
 
-    <ImageView
-        android:id="@+id/photo_image_view"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/photo_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Photo Description"
-        android:gravity="center_horizontal"
-        android:paddingTop="4dp" />
-</LinearLayout>
+        <!-- Image de la photo -->
+        <ImageView
+            android:id="@+id/photo_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Photo Property"
+            android:scaleType="centerCrop" />
+
+        <!-- Banderole noire semi-transparente -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:background="#80000000"
+            android:gravity="center">
+
+            <!-- Texte blanc centré -->
+            <TextView
+                android:id="@+id/photo_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Photo Description"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+    </FrameLayout>
+</androidx.cardview.widget.CardView>

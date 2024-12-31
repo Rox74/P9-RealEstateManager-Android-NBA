@@ -31,7 +31,11 @@ public class PropertyDetailFragment extends Fragment {
     private MapViewModel mapViewModel;
     private RecyclerView photoRecyclerView;
     private TextView descriptionTextView;
-    private TextView detailsTextView;
+    private TextView surfaceTextView;
+    private TextView roomsTextView;
+    private TextView bathroomsTextView;
+    private TextView bedroomsTextView;
+    private TextView locationTextView;
     private ImageView mapImageView;
 
     public static PropertyDetailFragment newInstance(Property property) {
@@ -49,7 +53,11 @@ public class PropertyDetailFragment extends Fragment {
         // Initialisation des vues
         photoRecyclerView = view.findViewById(R.id.property_photos);
         descriptionTextView = view.findViewById(R.id.property_description);
-        detailsTextView = view.findViewById(R.id.property_details);
+        surfaceTextView = view.findViewById(R.id.property_surface);
+        roomsTextView = view.findViewById(R.id.property_rooms);
+        bathroomsTextView = view.findViewById(R.id.property_bathrooms);
+        bedroomsTextView = view.findViewById(R.id.property_bedrooms);
+        locationTextView = view.findViewById(R.id.property_location);
         mapImageView = view.findViewById(R.id.property_map);
 
         // Configuration RecyclerView pour les photos
@@ -69,8 +77,13 @@ public class PropertyDetailFragment extends Fragment {
         // Observer les données du ViewModel
         propertyDetailViewModel.getSelectedProperty().observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
+                // Remplir les données
                 descriptionTextView.setText(property.description);
-                detailsTextView.setText(formatPropertyDetails(property));
+                surfaceTextView.setText(property.surface + " m²");
+                roomsTextView.setText(String.valueOf(property.numberOfRooms));
+                bathroomsTextView.setText(String.valueOf(property.numberOfBathrooms));
+                bedroomsTextView.setText(String.valueOf(property.numberOfBedrooms));
+                locationTextView.setText(formatPropertyLocation(property.address));
                 photoAdapter.setPhotos(property.photos);
 
                 // Charger la carte via la méthode
@@ -81,10 +94,11 @@ public class PropertyDetailFragment extends Fragment {
         return view;
     }
 
-    private String formatPropertyDetails(Property property) {
-        return "Surface: " + property.surface + " m²\n"
-                + "Rooms: " + property.numberOfRooms + "\n"
-                + "Agent: " + property.agentName;
+    private String formatPropertyLocation(Address address) {
+        return address.street + "\n"
+                + address.city + "\n"
+                + address.state + " " + address.zipCode + "\n"
+                + address.country;
     }
 
     private void loadStaticMap(Address address) {

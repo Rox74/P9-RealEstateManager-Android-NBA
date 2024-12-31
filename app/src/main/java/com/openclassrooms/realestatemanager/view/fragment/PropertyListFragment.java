@@ -82,7 +82,9 @@ public class PropertyListFragment extends Fragment {
                 "Condo",
                 9800000,
                 1072,
-                8,
+                8, // Rooms
+                2, // Bathrooms
+                4, // Bedrooms
                 "Luxury condo featuring 4 bedrooms, 2 baths, and breathtaking views of Manhattan.",
                 address1,
                 photos1,
@@ -118,7 +120,9 @@ public class PropertyListFragment extends Fragment {
                 "Single Family Residence",
                 950000,
                 374,
-                3,
+                3, // Rooms
+                1, // Bathrooms
+                1, // Bedrooms
                 "Charming family residence with 1 bedroom, 1 bath, and a large backyard, located in Montauk.",
                 address2,
                 photos2,

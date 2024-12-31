@@ -25,6 +25,8 @@ public class Property implements Parcelable {
     public double price;
     public double surface;
     public int numberOfRooms;
+    public int numberOfBathrooms;
+    public int numberOfBedrooms; 
     public String description;
 
     @Embedded
@@ -46,13 +48,15 @@ public class Property implements Parcelable {
     }
 
     // Constructeur avec tous les champs
-    public Property(String type, double price, double surface, int numberOfRooms, String description,
-                    Address address, List<Photo> photos, List<PointOfInterest> pointsOfInterest,
+    public Property(String type, double price, double surface, int numberOfRooms, int numberOfBathrooms, int numberOfBedrooms,
+                    String description, Address address, List<Photo> photos, List<PointOfInterest> pointsOfInterest,
                     boolean isSold, Date marketDate, Date soldDate, String agentName) {
         this.type = type;
         this.price = price;
         this.surface = surface;
         this.numberOfRooms = numberOfRooms;
+        this.numberOfBathrooms = numberOfBathrooms;
+        this.numberOfBedrooms = numberOfBedrooms;
         this.description = description;
         this.address = address;
         this.photos = photos;
@@ -63,6 +67,7 @@ public class Property implements Parcelable {
         this.agentName = agentName;
     }
 
+    // Constructeur simplifié
     public Property(String type, String agentName, double price) {
         this.type = type;
         this.agentName = agentName;
@@ -71,6 +76,8 @@ public class Property implements Parcelable {
         // Champs avec valeurs par défaut
         this.surface = 0.0;
         this.numberOfRooms = 0;
+        this.numberOfBathrooms = 0;
+        this.numberOfBedrooms = 0;
         this.description = "No description available";
         this.address = new Address();
         this.photos = new ArrayList<>();
@@ -86,6 +93,8 @@ public class Property implements Parcelable {
         price = in.readDouble();
         surface = in.readDouble();
         numberOfRooms = in.readInt();
+        numberOfBathrooms = in.readInt();
+        numberOfBedrooms = in.readInt(); 
         description = in.readString();
         address = in.readParcelable(Address.class.getClassLoader());
         photos = in.createTypedArrayList(Photo.CREATOR);
@@ -120,6 +129,8 @@ public class Property implements Parcelable {
         dest.writeDouble(price);
         dest.writeDouble(surface);
         dest.writeInt(numberOfRooms);
+        dest.writeInt(numberOfBathrooms);
+        dest.writeInt(numberOfBedrooms); 
         dest.writeString(description);
         dest.writeParcelable(address, flags);
         dest.writeTypedList(photos);
@@ -137,14 +148,13 @@ public class Property implements Parcelable {
         if (values.containsKey("price")) property.price = values.getAsDouble("price");
         if (values.containsKey("surface")) property.surface = values.getAsDouble("surface");
         if (values.containsKey("numberOfRooms")) property.numberOfRooms = values.getAsInteger("numberOfRooms");
+        if (values.containsKey("numberOfBathrooms")) property.numberOfBathrooms = values.getAsInteger("numberOfBathrooms");
+        if (values.containsKey("numberOfBedrooms")) property.numberOfBedrooms = values.getAsInteger("numberOfBedrooms"); 
         if (values.containsKey("description")) property.description = values.getAsString("description");
         if (values.containsKey("isSold")) property.isSold = values.getAsBoolean("isSold");
         if (values.containsKey("marketDate")) property.marketDate = new Date(values.getAsLong("marketDate"));
         if (values.containsKey("soldDate")) property.soldDate = new Date(values.getAsLong("soldDate"));
         if (values.containsKey("agentName")) property.agentName = values.getAsString("agentName");
-
-        // Address peut être géré de manière similaire si ses valeurs sont dans ContentValues
-        // Ajoutez la logique pour `photos` et `pointsOfInterest` si nécessaire.
 
         return property;
     }

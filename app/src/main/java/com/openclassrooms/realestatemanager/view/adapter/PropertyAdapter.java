@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.view.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
 
     private List<Property> properties = new ArrayList<>();
     private final OnPropertyClickListener listener;
+    private int selectedPosition = RecyclerView.NO_POSITION; // Position sélectionnée
 
     public interface OnPropertyClickListener {
         void onPropertyClick(Property property);
@@ -39,7 +41,14 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
     @Override
     public void onBindViewHolder(@NonNull PropertyViewHolder holder, int position) {
         Property property = properties.get(position);
-        holder.bind(property, listener);
+        holder.bind(property, listener, position == selectedPosition); // Passe l'état sélectionné
+        holder.itemView.setOnClickListener(v -> {
+            int previousPosition = selectedPosition;
+            selectedPosition = holder.getAdapterPosition(); // Met à jour la position sélectionnée
+            notifyItemChanged(previousPosition); // Actualise l'ancien élément
+            notifyItemChanged(selectedPosition); // Actualise le nouvel élément
+            listener.onPropertyClick(property); // Notifie le clic
+        });
     }
 
     @Override
@@ -60,6 +69,7 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
 
         public PropertyViewHolder(@NonNull View itemView) {
             super(itemView);
+
             // Liez les éléments de la vue avec leurs IDs respectifs
             typeTextView = itemView.findViewById(R.id.property_type);
             locationTextView = itemView.findViewById(R.id.property_location);
@@ -67,19 +77,23 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
             propertyImageView = itemView.findViewById(R.id.property_image);
         }
 
-        public void bind(Property property, OnPropertyClickListener listener) {
+        public void bind(Property property, OnPropertyClickListener listener, boolean isSelected) {
             typeTextView.setText(property.type);
             locationTextView.setText(property.address != null
                     ? property.address.city + ", " + property.address.country
                     : "Location not available");
             priceTextView.setText("$" + property.price);
+
             // Placeholder : chargez l'image si disponible (exemple avec Glide)
             Glide.with(itemView.getContext())
                     .load(property.photos != null && !property.photos.isEmpty() ? property.photos.get(0).uri : R.drawable.ic_placeholder)
                     .into(propertyImageView);
 
-            // Définir le comportement au clic
-            itemView.setOnClickListener(v -> listener.onPropertyClick(property));
+            // Définir l'état sélectionné via setSelected
+            itemView.setSelected(isSelected);
+            priceTextView.setTextColor(isSelected
+                    ? Color.parseColor("#005f73") // Bleu foncé pour le texte sélectionné
+                    : Color.parseColor("#0077b6")); // Bleu vif par défaut
         }
     }
 }

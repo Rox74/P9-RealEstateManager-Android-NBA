@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "34586d927f0406cdf078d95dc91faf38",
+    "identityHash": "3e21e07388c56d062c333af33106def2",
     "entities": [
       {
         "tableName": "property",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT, `price` REAL NOT NULL, `surface` REAL NOT NULL, `numberOfRooms` INTEGER NOT NULL, `description` TEXT, `photos` TEXT, `pointsOfInterest` TEXT, `isSold` INTEGER NOT NULL, `marketDate` INTEGER, `soldDate` INTEGER, `agentName` TEXT, `street` TEXT, `city` TEXT, `state` TEXT, `zipCode` TEXT, `country` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT, `price` REAL NOT NULL, `surface` REAL NOT NULL, `numberOfRooms` INTEGER NOT NULL, `numberOfBathrooms` INTEGER NOT NULL, `numberOfBedrooms` INTEGER NOT NULL, `description` TEXT, `photos` TEXT, `pointsOfInterest` TEXT, `isSold` INTEGER NOT NULL, `marketDate` INTEGER, `soldDate` INTEGER, `agentName` TEXT, `street` TEXT, `city` TEXT, `state` TEXT, `zipCode` TEXT, `country` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -35,6 +35,18 @@
           {
             "fieldPath": "numberOfRooms",
             "columnName": "numberOfRooms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfBathrooms",
+            "columnName": "numberOfBathrooms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfBedrooms",
+            "columnName": "numberOfBedrooms",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -124,7 +136,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '34586d927f0406cdf078d95dc91faf38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e21e07388c56d062c333af33106def2')"
     ]
   }
 }

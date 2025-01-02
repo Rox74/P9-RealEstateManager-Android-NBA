@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.di.ViewModelFactory;
 import com.openclassrooms.realestatemanager.model.entity.Address;
 import com.openclassrooms.realestatemanager.model.entity.Property;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -65,9 +66,16 @@ public class PropertyDetailFragment extends Fragment {
         PhotoAdapter photoAdapter = new PhotoAdapter();
         photoRecyclerView.setAdapter(photoAdapter);
 
-        // Initialisation des ViewModels
-        propertyDetailViewModel = new ViewModelProvider(this).get(PropertyDetailViewModel.class);
-        mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        // Initialisation des ViewModels avec ViewModelFactory
+        propertyDetailViewModel = new ViewModelProvider(
+                this,
+                ViewModelFactory.getInstance(requireActivity().getApplication())
+        ).get(PropertyDetailViewModel.class);
+
+        mapViewModel = new ViewModelProvider(
+                this,
+                ViewModelFactory.getInstance(requireActivity().getApplication())
+        ).get(MapViewModel.class);
 
         if (getArguments() != null && getArguments().containsKey(ARG_PROPERTY)) {
             Property property = getArguments().getParcelable(ARG_PROPERTY);

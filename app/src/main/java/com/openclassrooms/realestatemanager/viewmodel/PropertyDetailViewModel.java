@@ -6,18 +6,17 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.model.entity.Property;
 import com.openclassrooms.realestatemanager.repository.PropertyRepository;
 
-public class PropertyDetailViewModel extends AndroidViewModel {
-    private PropertyRepository repository;
-    private MutableLiveData<Property> selectedProperty;
+public class PropertyDetailViewModel extends ViewModel {
+    private final PropertyRepository repository;
+    private final MutableLiveData<Property> selectedProperty = new MutableLiveData<>();
 
-    public PropertyDetailViewModel(@NonNull Application application) {
-        super(application);
-        repository = new PropertyRepository(application);
-        selectedProperty = new MutableLiveData<>();
+    public PropertyDetailViewModel(PropertyRepository repository) {
+        this.repository = repository;
     }
 
     public LiveData<Property> getSelectedProperty() {

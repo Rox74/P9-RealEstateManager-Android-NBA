@@ -11,8 +11,8 @@ import com.openclassrooms.realestatemanager.model.entity.Property;
 import java.util.List;
 
 public class PropertyRepository {
-    private PropertyDao propertyDao;
-    private LiveData<List<Property>> allProperties;
+    private final PropertyDao propertyDao;
+    private final LiveData<List<Property>> allProperties;
 
     public PropertyRepository(Application application) {
         PropertyDatabase database = PropertyDatabase.getInstance(application);
@@ -30,5 +30,14 @@ public class PropertyRepository {
 
     public void update(Property property) {
         PropertyDatabase.databaseWriteExecutor.execute(() -> propertyDao.update(property));
+    }
+
+    // Méthode pour insérer les données mockées
+    public void insertMockData(List<Property> properties) {
+        PropertyDatabase.databaseWriteExecutor.execute(() -> {
+            for (Property property : properties) {
+                propertyDao.insert(property);
+            }
+        });
     }
 }

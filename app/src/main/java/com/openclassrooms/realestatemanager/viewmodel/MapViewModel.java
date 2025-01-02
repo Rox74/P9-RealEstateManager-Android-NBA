@@ -17,8 +17,8 @@ public class MapViewModel extends ViewModel {
     private final MutableLiveData<NominatimResponse> mapDataLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
 
-    public MapViewModel() {
-        repository = new MapRepository();
+    public MapViewModel(MapRepository repository) {
+        this.repository = repository;
     }
 
     public LiveData<NominatimResponse> getMapDataLiveData() {

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.openclassrooms.realestatemanager.model.database.PropertyDatabase;
 import com.openclassrooms.realestatemanager.repository.MapRepository;
 import com.openclassrooms.realestatemanager.repository.PropertyRepository;
+import com.openclassrooms.realestatemanager.viewmodel.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.MapViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyListViewModel;
@@ -42,6 +43,8 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new PropertyListViewModel(propertyRepository);
         } else if (modelClass.isAssignableFrom(PropertyDetailViewModel.class)) {
             return (T) new PropertyDetailViewModel(propertyRepository);
+        } else if (modelClass.isAssignableFrom(AddPropertyViewModel.class)) {
+            return (T) new AddPropertyViewModel(propertyRepository);
         } else if (modelClass.isAssignableFrom(MapViewModel.class)) {
             return (T) new MapViewModel(mapRepository);
         }

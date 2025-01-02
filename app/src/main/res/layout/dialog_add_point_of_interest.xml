@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Champ pour le nom du point d'intérêt -->
+    <EditText
+        android:id="@+id/edit_text_poi_name"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Point of Interest Name"
+        android:inputType="text" />
+
+    <!-- Champ pour le type du point d'intérêt -->
+    <EditText
+        android:id="@+id/edit_text_poi_type"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Point of Interest Type"
+        android:inputType="text" />
+</LinearLayout>

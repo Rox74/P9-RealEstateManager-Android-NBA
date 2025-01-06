@@ -28,6 +28,7 @@ import com.openclassrooms.realestatemanager.model.entity.Photo;
 import com.openclassrooms.realestatemanager.model.entity.PointOfInterest;
 import com.openclassrooms.realestatemanager.model.entity.Property;
 import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
+import com.openclassrooms.realestatemanager.view.adapter.PointOfInterestAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.AddPropertyViewModel;
 
 import java.util.ArrayList;

@@ -74,7 +74,7 @@ public class PropertyDetailFragment extends Fragment {
 
         // Configuration RecyclerView pour les photos
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        PhotoAdapter photoAdapter = new PhotoAdapter();
+        PhotoAdapter photoAdapter = new PhotoAdapter(false, null);  // Pas de suppression en mode lecture seule
         photoRecyclerView.setAdapter(photoAdapter);
 
         // Initialisation des ViewModels avec ViewModelFactory

@@ -78,11 +78,17 @@ public class EditPropertyFragment extends Fragment {
 
         // Initialisation des RecyclerView
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        photoAdapter = new PhotoAdapter();
+        photoAdapter = new PhotoAdapter(true, updatedPhotos -> {
+            photos.clear();
+            photos.addAll(updatedPhotos);
+        });
         photoRecyclerView.setAdapter(photoAdapter);
 
         pointsOfInterestRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        pointOfInterestAdapter = new PointOfInterestAdapter(pointsOfInterest);
+        pointOfInterestAdapter = new PointOfInterestAdapter(pointsOfInterest, true, updatedPointsOfInterest -> {
+            pointsOfInterest.clear();
+            pointsOfInterest.addAll(updatedPointsOfInterest);
+        });
         pointsOfInterestRecyclerView.setAdapter(pointOfInterestAdapter);
 
         // Initialisation du ViewModel
@@ -226,6 +232,10 @@ public class EditPropertyFragment extends Fragment {
                 zipCodeEditText.getText().toString().trim(),
                 countryEditText.getText().toString().trim()
         );
+
+        // 🔹 Ajout de la mise à jour explicite des listes avant sauvegarde
+        selectedProperty.photos = new ArrayList<>(photos);
+        selectedProperty.pointsOfInterest = new ArrayList<>(pointsOfInterest);
 
         editPropertyViewModel.updateProperty(selectedProperty);
         requireActivity().getSupportFragmentManager().popBackStack();

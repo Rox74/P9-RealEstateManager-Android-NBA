@@ -1,8 +1,11 @@
 package com.openclassrooms.realestatemanager.view.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +21,13 @@ import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
     private List<Photo> photos = new ArrayList<>();
+    private boolean isEditable;
+    private OnPhotoRemovedListener photoRemovedListener;
+
+    public PhotoAdapter(boolean isEditable, OnPhotoRemovedListener photoRemovedListener) {
+        this.isEditable = isEditable;
+        this.photoRemovedListener = photoRemovedListener;
+    }
 
     @NonNull
     @Override
@@ -31,6 +41,29 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         Photo photo = photos.get(position);
         Glide.with(holder.itemView.getContext()).load(photo.uri).into(holder.photoImageView);
         holder.photoDescription.setText(photo.description);
+
+        // Afficher le bouton de suppression uniquement si en mode édition
+        if (isEditable) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                updateList(position);
+            });
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateList(int position) {
+        if (position >= 0 && position < photos.size()) {
+            List<Photo> updatedList = new ArrayList<>(photos); // Cloner la liste avant modification
+            updatedList.remove(position);
+            setPhotos(updatedList); // Mettre à jour l'affichage
+
+            // Notifier le fragment parent de la mise à jour
+            if (photoRemovedListener != null) {
+                photoRemovedListener.onPhotoRemoved(updatedList);
+            }
+        }
     }
 
     @Override
@@ -43,14 +76,26 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         notifyDataSetChanged();
     }
 
+    public interface OnPhotoRemovedListener {
+        void onPhotoRemoved(List<Photo> updatedPhotos);
+    }
+
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
         private ImageView photoImageView;
         private TextView photoDescription;
+        private ImageButton deleteButton;
 
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
             photoImageView = itemView.findViewById(R.id.photo_image_view);
             photoDescription = itemView.findViewById(R.id.photo_description);
+            deleteButton = new ImageButton(itemView.getContext());
+            deleteButton.setImageResource(R.drawable.ic_delete);
+            deleteButton.setBackgroundColor(Color.TRANSPARENT);
+            deleteButton.setPadding(16, 16, 16, 16);
+
+            // Ajouter dynamiquement le bouton
+            ((FrameLayout) itemView).addView(deleteButton);
         }
     }
 }

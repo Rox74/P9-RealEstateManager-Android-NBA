@@ -78,11 +78,17 @@ public class AddPropertyFragment extends Fragment {
 
         // Initialisation des RecyclerView
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        photoAdapter = new PhotoAdapter();
+        photoAdapter = new PhotoAdapter(true, updatedPhotos -> {
+            photos.clear();
+            photos.addAll(updatedPhotos);
+        });
         photoRecyclerView.setAdapter(photoAdapter);
 
         pointsOfInterestRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        pointOfInterestAdapter = new PointOfInterestAdapter(pointsOfInterest);
+        pointOfInterestAdapter = new PointOfInterestAdapter(pointsOfInterest, true, updatedPointsOfInterest -> {
+            pointsOfInterest.clear();
+            pointsOfInterest.addAll(updatedPointsOfInterest);
+        });
         pointsOfInterestRecyclerView.setAdapter(pointOfInterestAdapter);
 
         // Initialisation du ViewModel
@@ -164,6 +170,10 @@ public class AddPropertyFragment extends Fragment {
     }
 
     private void saveProperty() {
+        // Met à jour les listes avec les dernières suppressions
+        photoAdapter.setPhotos(photos);
+        pointOfInterestAdapter.setPointsOfInterest(pointsOfInterest);
+
         String type = typeEditText.getText().toString().trim();
         double price = Double.parseDouble(priceEditText.getText().toString().trim());
         double surface = Double.parseDouble(surfaceEditText.getText().toString().trim());

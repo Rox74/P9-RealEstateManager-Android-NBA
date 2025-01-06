@@ -3,6 +3,9 @@ package com.openclassrooms.realestatemanager.view.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +32,7 @@ import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 
 public class PropertyDetailFragment extends Fragment {
     private static final String ARG_PROPERTY = "property";
+    private Property selectedProperty;
 
     private PropertyDetailViewModel propertyDetailViewModel;
     private MapViewModel mapViewModel;
@@ -45,6 +51,11 @@ public class PropertyDetailFragment extends Fragment {
         args.putParcelable(ARG_PROPERTY, property);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -78,14 +89,14 @@ public class PropertyDetailFragment extends Fragment {
         ).get(MapViewModel.class);
 
         if (getArguments() != null && getArguments().containsKey(ARG_PROPERTY)) {
-            Property property = getArguments().getParcelable(ARG_PROPERTY);
-            propertyDetailViewModel.selectProperty(property);
+            selectedProperty = getArguments().getParcelable(ARG_PROPERTY);
+            propertyDetailViewModel.selectProperty(selectedProperty);
         }
 
         // Observer les données du ViewModel
         propertyDetailViewModel.getSelectedProperty().observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
-                // Remplir les données
+                selectedProperty = property; // Stocke la propriété pour l'édition
                 descriptionTextView.setText(property.description);
                 surfaceTextView.setText(property.surface + " m²");
                 roomsTextView.setText(String.valueOf(property.numberOfRooms));
@@ -99,7 +110,44 @@ public class PropertyDetailFragment extends Fragment {
             }
         });
 
+        setupMenu(); // Ajout du menu dynamique
+
         return view;
+    }
+
+    private void setupMenu() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.detail_menu, menu); // Charge le menu spécifique au fragment
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_edit_property) {
+                    openEditProperty();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    private void openEditProperty() {
+        if (selectedProperty != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("property_id", selectedProperty.id);
+
+            EditPropertyFragment editFragment = new EditPropertyFragment();
+            editFragment.setArguments(bundle);
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, editFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Toast.makeText(getContext(), "No property selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private String formatPropertyLocation(Address address) {

@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.view.adapter;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.entity.Property;
+import com.openclassrooms.realestatemanager.view.fragment.EditPropertyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +44,15 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
     @Override
     public void onBindViewHolder(@NonNull PropertyViewHolder holder, int position) {
         Property property = properties.get(position);
-        holder.bind(property, listener, position == selectedPosition); // Passe l'état sélectionné
+        holder.bind(property, listener, position == selectedPosition);
+
         holder.itemView.setOnClickListener(v -> {
             int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition(); // Met à jour la position sélectionnée
-            notifyItemChanged(previousPosition); // Actualise l'ancien élément
-            notifyItemChanged(selectedPosition); // Actualise le nouvel élément
-            listener.onPropertyClick(property); // Notifie le clic
+            selectedPosition = holder.getBindingAdapterPosition();
+            notifyItemChanged(previousPosition);
+            notifyItemChanged(selectedPosition);
+
+            listener.onPropertyClick(property);
         });
     }
 

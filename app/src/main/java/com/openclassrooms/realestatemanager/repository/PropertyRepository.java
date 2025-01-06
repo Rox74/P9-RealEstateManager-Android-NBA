@@ -40,4 +40,8 @@ public class PropertyRepository {
             }
         });
     }
+
+    public LiveData<Property> getPropertyById(int propertyId) {
+        return propertyDao.getPropertyById(propertyId);
+    }
 }

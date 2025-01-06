@@ -20,8 +20,8 @@ public interface PropertyDao {
     @Update
     int update(Property property);
 
-    @Query("SELECT * FROM property WHERE id = :id")
-    LiveData<Property> getPropertyById(int id);
+    @Query("SELECT * FROM property WHERE id = :propertyId")
+    LiveData<Property> getPropertyById(int propertyId);
 
     @Query("SELECT * FROM property")
     LiveData<List<Property>> getAllProperties();

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edit_text_price"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Property Price (€)"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/edit_text_down_payment"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Down Payment (€)"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/edit_text_interest_rate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Annual Interest Rate (%)"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/edit_text_duration"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Loan Duration (years)"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/button_calculate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calculate" />
+
+    <TextView
+        android:id="@+id/text_view_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:textSize="18sp"
+        android:paddingTop="16dp"/>
+</LinearLayout>

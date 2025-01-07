@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.repository.PropertyRepository;
 import com.openclassrooms.realestatemanager.utils.MockDataProvider;
 import com.openclassrooms.realestatemanager.view.fragment.AddPropertyFragment;
 import com.openclassrooms.realestatemanager.view.fragment.EditPropertyFragment;
+import com.openclassrooms.realestatemanager.view.fragment.LoanSimulatorFragment;
 import com.openclassrooms.realestatemanager.view.fragment.PropertyListFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.action_add_property) {
                     openAddPropertyFragment();
                     return true;
+                } else if (menuItem.getItemId() == R.id.action_loan_simulator) { // 🔹 Ajout du simulateur
+                    openLoanSimulatorFragment();
+                    return true;
                 }
                 return false;
             }
@@ -68,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
     private void openAddPropertyFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AddPropertyFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openLoanSimulatorFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new LoanSimulatorFragment()) // Affiche LoanSimulatorFragment
                 .addToBackStack(null)
                 .commit();
     }

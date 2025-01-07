@@ -64,7 +64,23 @@ public class PropertyListFragment extends Fragment {
             }
         });
 
+        // Écoute des mises à jour après ajout ou modification d'une propriété
+        getParentFragmentManager().setFragmentResultListener("update_property_list", this, (requestKey, bundle) -> {
+            boolean updated = bundle.getBoolean("property_updated", false);
+            if (updated) {
+                refreshPropertyList();
+            }
+        });
+
         return view;
+    }
+
+    private void refreshPropertyList() {
+        propertyListViewModel.getAllProperties().observe(getViewLifecycleOwner(), properties -> {
+            if (properties != null) {
+                adapter.setProperties(properties);
+            }
+        });
     }
 
     private boolean isTablet() {

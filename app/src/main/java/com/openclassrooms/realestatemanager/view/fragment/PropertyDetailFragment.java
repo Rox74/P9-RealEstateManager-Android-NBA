@@ -112,7 +112,42 @@ public class PropertyDetailFragment extends Fragment {
 
         setupMenu(); // Ajout du menu dynamique
 
+        // Écoute des mises à jour après modification d'une propriété
+        getParentFragmentManager().setFragmentResultListener("update_property_list", this, (requestKey, bundle) -> {
+            boolean updated = bundle.getBoolean("property_updated", false);
+            if (updated && selectedProperty != null) {
+                reloadPropertyDetails(selectedProperty.id);
+            }
+        });
+
         return view;
+    }
+
+    private void reloadPropertyDetails(int propertyId) {
+        propertyDetailViewModel.getPropertyById(propertyId).observe(getViewLifecycleOwner(), property -> {
+            if (property != null) {
+                populateFields(property);
+            }
+        });
+    }
+
+    private void populateFields(Property property) {
+        selectedProperty = property;
+
+        descriptionTextView.setText(property.description);
+        surfaceTextView.setText(property.surface + " m²");
+        roomsTextView.setText(String.valueOf(property.numberOfRooms));
+        bathroomsTextView.setText(String.valueOf(property.numberOfBathrooms));
+        bedroomsTextView.setText(String.valueOf(property.numberOfBedrooms));
+        locationTextView.setText(formatPropertyLocation(property.address));
+
+        // Met à jour les photos
+        if (photoRecyclerView.getAdapter() instanceof PhotoAdapter) {
+            ((PhotoAdapter) photoRecyclerView.getAdapter()).setPhotos(property.photos);
+        }
+
+        // Recharge la carte
+        loadStaticMap(property.address);
     }
 
     private void setupMenu() {

@@ -26,4 +26,8 @@ public class PropertyDetailViewModel extends ViewModel {
     public void selectProperty(Property property) {
         selectedProperty.setValue(property);
     }
+
+    public LiveData<Property> getPropertyById(int propertyId) {
+        return repository.getPropertyById(propertyId);
+    }
 }

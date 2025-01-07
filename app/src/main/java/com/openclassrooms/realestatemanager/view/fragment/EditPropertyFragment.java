@@ -81,6 +81,7 @@ public class EditPropertyFragment extends Fragment {
         photoAdapter = new PhotoAdapter(true, updatedPhotos -> {
             photos.clear();
             photos.addAll(updatedPhotos);
+            photoAdapter.setPhotos(photos); // Mise à jour explicite
         });
         photoRecyclerView.setAdapter(photoAdapter);
 
@@ -233,11 +234,17 @@ public class EditPropertyFragment extends Fragment {
                 countryEditText.getText().toString().trim()
         );
 
-        // 🔹 Ajout de la mise à jour explicite des listes avant sauvegarde
+        // Ajout de la mise à jour explicite des listes avant sauvegarde
         selectedProperty.photos = new ArrayList<>(photos);
         selectedProperty.pointsOfInterest = new ArrayList<>(pointsOfInterest);
 
         editPropertyViewModel.updateProperty(selectedProperty);
+
+        // Envoyer un signal de mise à jour après modification
+        Bundle result = new Bundle();
+        result.putBoolean("property_updated", true);
+        getParentFragmentManager().setFragmentResult("update_property_list", result);
+
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

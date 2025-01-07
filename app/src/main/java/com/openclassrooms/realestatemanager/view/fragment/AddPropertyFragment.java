@@ -81,6 +81,7 @@ public class AddPropertyFragment extends Fragment {
         photoAdapter = new PhotoAdapter(true, updatedPhotos -> {
             photos.clear();
             photos.addAll(updatedPhotos);
+            photoAdapter.setPhotos(photos); // Mise à jour explicite
         });
         photoRecyclerView.setAdapter(photoAdapter);
 
@@ -158,9 +159,11 @@ public class AddPropertyFragment extends Fragment {
                 .setPositiveButton("Add", (dialog, which) -> {
                     String name = nameEditText.getText().toString().trim();
                     String type = typeEditText.getText().toString().trim();
+
                     if (!name.isEmpty() && !type.isEmpty()) {
-                        pointsOfInterest.add(new PointOfInterest(name, type));
-                        pointOfInterestAdapter.notifyDataSetChanged();
+                        PointOfInterest newPOI = new PointOfInterest(name, type);
+                        pointsOfInterest.add(newPOI); // Ajout à la liste principale
+                        pointOfInterestAdapter.setPointsOfInterest(new ArrayList<>(pointsOfInterest)); // Mise à jour adaptateur
                     } else {
                         Toast.makeText(getContext(), "Both fields are required", Toast.LENGTH_SHORT).show();
                     }
@@ -170,9 +173,9 @@ public class AddPropertyFragment extends Fragment {
     }
 
     private void saveProperty() {
-        // Met à jour les listes avec les dernières suppressions
-        photoAdapter.setPhotos(photos);
-        pointOfInterestAdapter.setPointsOfInterest(pointsOfInterest);
+        // Met à jour les listes avec les dernières suppressions et ajouts
+        photoAdapter.setPhotos(new ArrayList<>(photos));
+        pointOfInterestAdapter.setPointsOfInterest(new ArrayList<>(pointsOfInterest));
 
         String type = typeEditText.getText().toString().trim();
         double price = Double.parseDouble(priceEditText.getText().toString().trim());
@@ -197,10 +200,16 @@ public class AddPropertyFragment extends Fragment {
 
         Property property = new Property(
                 type, price, surface, rooms, bathrooms, bedrooms, description,
-                address, photos, pointsOfInterest, false, new Date(), null, agentName
+                address, new ArrayList<>(photos), new ArrayList<>(pointsOfInterest), false, new Date(), null, agentName
         );
 
         addPropertyViewModel.insertProperty(property);
+
+        // Envoyer un signal de mise à jour après l'ajout
+        Bundle result = new Bundle();
+        result.putBoolean("property_updated", true);
+        getParentFragmentManager().setFragmentResult("update_property_list", result);
+
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

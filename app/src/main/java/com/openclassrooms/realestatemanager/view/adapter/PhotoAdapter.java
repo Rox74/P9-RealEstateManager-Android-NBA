@@ -55,13 +55,19 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     private void updateList(int position) {
         if (position >= 0 && position < photos.size()) {
-            List<Photo> updatedList = new ArrayList<>(photos); // Cloner la liste avant modification
-            updatedList.remove(position);
-            setPhotos(updatedList); // Mettre à jour l'affichage
+            photos.remove(position);
+
+            // Si la liste devient vide après suppression
+            if (photos.isEmpty()) {
+                notifyDataSetChanged(); // Rafraîchit toute la RecyclerView
+            } else {
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, photos.size()); // Met à jour les indices restants
+            }
 
             // Notifier le fragment parent de la mise à jour
             if (photoRemovedListener != null) {
-                photoRemovedListener.onPhotoRemoved(updatedList);
+                photoRemovedListener.onPhotoRemoved(new ArrayList<>(photos));
             }
         }
     }
@@ -71,9 +77,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         return photos.size();
     }
 
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-        notifyDataSetChanged();
+    public void setPhotos(List<Photo> newPhotos) {
+        if (!photos.equals(newPhotos)) { // Évite les mises à jour inutiles
+            photos = newPhotos;
+            notifyDataSetChanged(); // Force un rafraîchissement global
+        }
     }
 
     public interface OnPhotoRemovedListener {

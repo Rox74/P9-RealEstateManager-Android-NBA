@@ -15,20 +15,37 @@ import com.openclassrooms.realestatemanager.viewmodel.MapViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyListViewModel;
 
+/**
+ * ViewModelFactory is a singleton factory that provides ViewModel instances.
+ * It ensures that all ViewModels are created with their necessary dependencies.
+ */
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-    private static volatile ViewModelFactory INSTANCE;
+    private static volatile ViewModelFactory INSTANCE; // Singleton instance
     private final PropertyRepository propertyRepository;
     private final MapRepository mapRepository;
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     * Initializes repositories required by ViewModels.
+     *
+     * @param application The Application instance used to initialize repositories.
+     */
     private ViewModelFactory(Application application) {
         PropertyDatabase database = PropertyDatabase.getInstance(application);
         this.propertyRepository = new PropertyRepository(application);
         this.mapRepository = new MapRepository();
     }
 
+    /**
+     * Returns the singleton instance of ViewModelFactory.
+     * Uses double-checked locking to ensure thread safety.
+     *
+     * @param application The Application instance required for initialization.
+     * @return The singleton instance of ViewModelFactory.
+     */
     public static ViewModelFactory getInstance(Application application) {
         if (INSTANCE == null) {
-            synchronized (ViewModelFactory.class) {
+            synchronized (ViewModelFactory.class) { // Ensures thread safety
                 if (INSTANCE == null) {
                     INSTANCE = new ViewModelFactory(application);
                 }
@@ -37,6 +54,14 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         return INSTANCE;
     }
 
+    /**
+     * Creates and returns an instance of the requested ViewModel.
+     * Provides the required repository to each ViewModel.
+     *
+     * @param modelClass The ViewModel class to instantiate.
+     * @return The ViewModel instance.
+     * @throws IllegalArgumentException if the ViewModel class is unknown.
+     */
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {

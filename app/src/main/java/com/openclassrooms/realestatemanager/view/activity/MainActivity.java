@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.di.AppInjector;
 import com.openclassrooms.realestatemanager.repository.PropertyRepository;
 import com.openclassrooms.realestatemanager.utils.MockDataProvider;
 import com.openclassrooms.realestatemanager.view.fragment.AddPropertyFragment;
@@ -23,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize ViewModelFactory globally using AppInjector
+        AppInjector.init(getApplication());
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {

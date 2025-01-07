@@ -16,38 +16,45 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Entity class representing a real estate property.
+ * Implements Parcelable to allow passing property objects between components.
+ */
 @Entity(tableName = "property")
 public class Property implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
 
-    public String type;
-    public double price;
-    public double surface;
-    public int numberOfRooms;
-    public int numberOfBathrooms;
-    public int numberOfBedrooms; 
-    public String description;
+    @PrimaryKey(autoGenerate = true)
+    public int id; // Unique identifier for the property
+
+    public String type; // Property type (e.g., house, apartment)
+    public double price; // Property price
+    public double surface; // Surface area in square meters
+    public int numberOfRooms; // Number of rooms
+    public int numberOfBathrooms; // Number of bathrooms
+    public int numberOfBedrooms; // Number of bedrooms
+    public String description; // Property description
 
     @Embedded
-    public Address address;
+    public Address address; // Address object storing location details
 
     @TypeConverters(PhotoConverter.class)
-    public List<Photo> photos;
+    public List<Photo> photos; // List of property photos
 
     @TypeConverters(PointOfInterestConverter.class)
-    public List<PointOfInterest> pointsOfInterest;
+    public List<PointOfInterest> pointsOfInterest; // List of nearby points of interest
 
-    public boolean isSold;
-    public Date marketDate;
-    public Date soldDate;
-    public String agentName;
+    public boolean isSold; // Flag indicating if the property has been sold
+    public Date marketDate; // Date when the property was listed on the market
+    public Date soldDate; // Date when the property was sold (if applicable)
+    public String agentName; // Name of the real estate agent responsible for the property
 
-    // Constructeur public requis par Room
+    // Default constructor required by Room
     public Property() {
     }
 
-    // Constructeur avec tous les champs
+    /**
+     * Constructor with all fields.
+     */
     public Property(String type, double price, double surface, int numberOfRooms, int numberOfBathrooms, int numberOfBedrooms,
                     String description, Address address, List<Photo> photos, List<PointOfInterest> pointsOfInterest,
                     boolean isSold, Date marketDate, Date soldDate, String agentName) {
@@ -67,13 +74,15 @@ public class Property implements Parcelable {
         this.agentName = agentName;
     }
 
-    // Constructeur simplifié
+    /**
+     * Simplified constructor for quick property creation with essential details.
+     */
     public Property(String type, String agentName, double price) {
         this.type = type;
         this.agentName = agentName;
         this.price = price;
 
-        // Champs avec valeurs par défaut
+        // Default values for other fields
         this.surface = 0.0;
         this.numberOfRooms = 0;
         this.numberOfBathrooms = 0;
@@ -87,6 +96,10 @@ public class Property implements Parcelable {
     }
 
     // Parcelable implementation
+
+    /**
+     * Constructor used for Parcel.
+     */
     protected Property(Parcel in) {
         id = in.readInt();
         type = in.readString();
@@ -94,7 +107,7 @@ public class Property implements Parcelable {
         surface = in.readDouble();
         numberOfRooms = in.readInt();
         numberOfBathrooms = in.readInt();
-        numberOfBedrooms = in.readInt(); 
+        numberOfBedrooms = in.readInt();
         description = in.readString();
         address = in.readParcelable(Address.class.getClassLoader());
         photos = in.createTypedArrayList(Photo.CREATOR);
@@ -122,6 +135,9 @@ public class Property implements Parcelable {
         return 0;
     }
 
+    /**
+     * Writes the object's data to a Parcel.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
@@ -130,7 +146,7 @@ public class Property implements Parcelable {
         dest.writeDouble(surface);
         dest.writeInt(numberOfRooms);
         dest.writeInt(numberOfBathrooms);
-        dest.writeInt(numberOfBedrooms); 
+        dest.writeInt(numberOfBedrooms);
         dest.writeString(description);
         dest.writeParcelable(address, flags);
         dest.writeTypedList(photos);
@@ -141,6 +157,9 @@ public class Property implements Parcelable {
         dest.writeString(agentName);
     }
 
+    /**
+     * Converts ContentValues to a Property object, useful for ContentProviders.
+     */
     public static Property fromContentValues(ContentValues values) {
         Property property = new Property();
         if (values.containsKey("id")) property.id = values.getAsInteger("id");
@@ -149,7 +168,7 @@ public class Property implements Parcelable {
         if (values.containsKey("surface")) property.surface = values.getAsDouble("surface");
         if (values.containsKey("numberOfRooms")) property.numberOfRooms = values.getAsInteger("numberOfRooms");
         if (values.containsKey("numberOfBathrooms")) property.numberOfBathrooms = values.getAsInteger("numberOfBathrooms");
-        if (values.containsKey("numberOfBedrooms")) property.numberOfBedrooms = values.getAsInteger("numberOfBedrooms"); 
+        if (values.containsKey("numberOfBedrooms")) property.numberOfBedrooms = values.getAsInteger("numberOfBedrooms");
         if (values.containsKey("description")) property.description = values.getAsString("description");
         if (values.containsKey("isSold")) property.isSold = values.getAsBoolean("isSold");
         if (values.containsKey("marketDate")) property.marketDate = new Date(values.getAsLong("marketDate"));

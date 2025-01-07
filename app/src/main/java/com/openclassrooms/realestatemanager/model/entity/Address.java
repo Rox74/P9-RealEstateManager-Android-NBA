@@ -3,18 +3,34 @@ package com.openclassrooms.realestatemanager.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Represents an address with street, city, state, zip code, and country information.
+ * Implements Parcelable to allow passing Address objects between components.
+ */
 public class Address implements Parcelable {
+
+    // Address fields
     public String street;
     public String city;
     public String state;
     public String zipCode;
     public String country;
 
-    // Constructeur public requis par Room
+    /**
+     * Default constructor required by Room (for database operations).
+     */
     public Address() {
     }
 
-    // Constructeur avec tous les champs
+    /**
+     * Constructor initializing all fields.
+     *
+     * @param street  The street address.
+     * @param city    The city name.
+     * @param state   The state or province.
+     * @param zipCode The postal or zip code.
+     * @param country The country name.
+     */
     public Address(String street, String city, String state, String zipCode, String country) {
         this.street = street;
         this.city = city;
@@ -23,6 +39,11 @@ public class Address implements Parcelable {
         this.country = country;
     }
 
+    /**
+     * Constructor to recreate an Address object from a Parcel.
+     *
+     * @param in Parcel containing serialized Address data.
+     */
     protected Address(Parcel in) {
         street = in.readString();
         city = in.readString();
@@ -31,6 +52,10 @@ public class Address implements Parcelable {
         country = in.readString();
     }
 
+    /**
+     * Parcelable creator for Address.
+     * Allows passing Address objects between Android components (e.g., Activities, Fragments).
+     */
     public static final Creator<Address> CREATOR = new Creator<Address>() {
         @Override
         public Address createFromParcel(Parcel in) {
@@ -43,11 +68,22 @@ public class Address implements Parcelable {
         }
     };
 
+    /**
+     * Describes the contents of the Parcelable object (always 0 for most cases).
+     *
+     * @return Always returns 0.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Writes the Address object data into a Parcel for storage or transmission.
+     *
+     * @param dest  The Parcel object to write data into.
+     * @param flags Additional flags (unused in this case).
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(street);

@@ -2,11 +2,16 @@ package com.openclassrooms.realestatemanager.view.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,8 +62,8 @@ public class PropertyListFragment extends Fragment {
                 ViewModelFactory.getInstance(requireActivity().getApplication())
         ).get(PropertyListViewModel.class);
 
-        // Observer les données du ViewModel
-        propertyListViewModel.getAllProperties().observe(getViewLifecycleOwner(), properties -> {
+        // Observer les données filtrées
+        propertyListViewModel.getFilteredProperties().observe(getViewLifecycleOwner(), properties -> {
             if (properties != null) {
                 adapter.setProperties(properties);
             }
@@ -72,21 +77,66 @@ public class PropertyListFragment extends Fragment {
             }
         });
 
+        setupMenu(); // 🔹 Ajout du menu de recherche avec MenuProvider
         return view;
     }
 
+    /**
+     * Configure le menu de recherche en utilisant MenuProvider.
+     */
+    private void setupMenu() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.list_menu, menu); // Charge le menu de recherche
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_search) {
+                    openSearchDialog(); // Ouvre la boîte de dialogue de recherche
+                    return true;
+                } else if (menuItem.getItemId() == R.id.action_reset_search) { // Réinitialise la recherche
+                    propertyListViewModel.resetSearch();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    /**
+     * Affiche la boîte de dialogue de recherche avancée.
+     */
+    private void openSearchDialog() {
+        SearchDialogFragment searchDialog = new SearchDialogFragment();
+        searchDialog.setOnSearchListener(criteria -> {
+            propertyListViewModel.searchProperties(criteria); // Applique le filtre
+        });
+        searchDialog.show(getParentFragmentManager(), "SearchDialog");
+    }
+
+    /**
+     * Rafraîchit la liste des propriétés après une mise à jour.
+     */
     private void refreshPropertyList() {
-        propertyListViewModel.getAllProperties().observe(getViewLifecycleOwner(), properties -> {
+        propertyListViewModel.getFilteredProperties().observe(getViewLifecycleOwner(), properties -> {
             if (properties != null) {
                 adapter.setProperties(properties);
             }
         });
     }
 
+    /**
+     * Vérifie si l'application est exécutée sur une tablette.
+     */
     private boolean isTablet() {
         return getResources().getBoolean(R.bool.is_tablet); // Définir "is_tablet" dans res/values/bools.xml
     }
 
+    /**
+     * Ouvre le détail d'une propriété pour les téléphones.
+     */
     private void navigateToPropertyDetail(Property property) {
         PropertyDetailFragment detailFragment = PropertyDetailFragment.newInstance(property);
         getParentFragmentManager().beginTransaction()
@@ -95,6 +145,9 @@ public class PropertyListFragment extends Fragment {
                 .commit();
     }
 
+    /**
+     * Ouvre le détail d'une propriété pour les tablettes.
+     */
     private void showPropertyDetailInTablet(Property property) {
         PropertyDetailFragment detailFragment = PropertyDetailFragment.newInstance(property);
         getParentFragmentManager().beginTransaction()

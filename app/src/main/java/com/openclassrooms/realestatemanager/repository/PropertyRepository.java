@@ -3,11 +3,14 @@ package com.openclassrooms.realestatemanager.repository;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.openclassrooms.realestatemanager.model.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.model.database.PropertyDatabase;
 import com.openclassrooms.realestatemanager.model.entity.Property;
+import com.openclassrooms.realestatemanager.model.entity.SearchCriteria;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,5 +85,21 @@ public class PropertyRepository {
      */
     public LiveData<Property> getPropertyById(int propertyId) {
         return propertyDao.getPropertyById(propertyId);
+    }
+
+    public LiveData<List<Property>> searchProperties(SearchCriteria criteria) {
+        return Transformations.map(propertyDao.searchProperties(
+                criteria.minPrice, criteria.maxPrice, criteria.minSurface, criteria.maxSurface,
+                criteria.minRooms, criteria.location
+        ), properties -> {
+            // Filtrer les propriétés en Java pour prendre en compte minPhotos
+            List<Property> filteredProperties = new ArrayList<>();
+            for (Property property : properties) {
+                if (criteria.minPhotos == 0 || property.photos.size() >= criteria.minPhotos) {
+                    filteredProperties.add(property);
+                }
+            }
+            return filteredProperties;
+        });
     }
 }

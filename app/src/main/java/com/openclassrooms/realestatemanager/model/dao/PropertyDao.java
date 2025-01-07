@@ -85,4 +85,15 @@ public interface PropertyDao {
      */
     @Query("DELETE FROM property WHERE id = :id")
     int deleteById(long id);
+
+    @Query("SELECT * FROM property WHERE " +
+            "(:minPrice = 0 OR price >= :minPrice) AND " +
+            "(:maxPrice = 0 OR price <= :maxPrice) AND " +
+            "(:minSurface = 0 OR surface >= :minSurface) AND " +
+            "(:maxSurface = 0 OR surface <= :maxSurface) AND " +
+            "(:minRooms = 0 OR numberOfRooms >= :minRooms) AND " +
+            "(:location IS NULL OR city LIKE '%' || :location || '%' OR state LIKE '%' || :location || '%')")
+    LiveData<List<Property>> searchProperties(
+            double minPrice, double maxPrice, double minSurface, double maxSurface,
+            int minRooms, String location);
 }

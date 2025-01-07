@@ -23,10 +23,10 @@ public class Utils {
      * NOTE: DO NOT REMOVE, MUST BE PRESENTED DURING THE FINAL REVIEW.
      *
      * @param dollars The amount in USD.
-     * @return The converted amount in EUR.
+     * @return The converted amount in EUR with cents.
      */
-    public static int convertDollarToEuro(int dollars) {
-        return (int) Math.round(dollars * 0.812); // Approximate conversion rate
+    public static double convertDollarToEuro(double dollars) {
+        return dollars * 0.96; // Approximate conversion rate (07/01/25)
     }
 
     /**
@@ -34,10 +34,10 @@ public class Utils {
      * NOTE: NEW METHOD, MUST BE PRESENTED DURING THE FINAL REVIEW.
      *
      * @param euros The amount in EUR.
-     * @return The converted amount in USD.
+     * @return The converted amount in USD with cents.
      */
-    public static int convertEuroToDollar(int euros) {
-        return (int) Math.round(euros * 1.23); // Approximate conversion rate
+    public static double convertEuroToDollar(double euros) {
+        return euros * 1.04; // Approximate conversion rate (07/01/25)
     }
 
     /**

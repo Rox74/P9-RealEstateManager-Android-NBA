@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edit_text_amount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter amount"
+        android:inputType="number" />
+
+    <!-- Sélecteur pour choisir la conversion -->
+    <Spinner
+        android:id="@+id/spinner_currency"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/text_view_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:textSize="18sp"
+        android:padding="8dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/button_convert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Convert"
+        android:padding="8dp"
+        android:gravity="center" />
+</LinearLayout>

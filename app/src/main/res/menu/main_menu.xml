@@ -8,11 +8,18 @@
         android:icon="@drawable/ic_add"
         app:showAsAction="always" />
 
-    <!-- Bouton pour afficher la liste des propriétés -->
+    <!-- Bouton pour afficher le simulateur de prêt -->
     <item
         android:id="@+id/action_loan_simulator"
         android:title="Loan Simulator"
         android:icon="@drawable/ic_loan"
+        app:showAsAction="never"/>
+
+    <!-- Bouton pour la conversion Dollar ↔ Euro -->
+    <item
+        android:id="@+id/action_currency_converter"
+        android:title="Currency Converter"
+        android:icon="@drawable/ic_currency"
         app:showAsAction="never"/>
 
 </menu>

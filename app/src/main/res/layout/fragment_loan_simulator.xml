@@ -9,14 +9,14 @@
         android:id="@+id/edit_text_price"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Property Price (€)"
+        android:hint="Property Price ($)"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/edit_text_down_payment"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Down Payment (€)"
+        android:hint="Down Payment ($)"
         android:inputType="numberDecimal" />
 
     <EditText

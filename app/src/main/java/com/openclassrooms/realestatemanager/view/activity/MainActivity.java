@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.di.AppInjector;
 import com.openclassrooms.realestatemanager.repository.PropertyRepository;
 import com.openclassrooms.realestatemanager.utils.MockDataProvider;
 import com.openclassrooms.realestatemanager.view.fragment.AddPropertyFragment;
+import com.openclassrooms.realestatemanager.view.fragment.CurrencyConverterFragment;
 import com.openclassrooms.realestatemanager.view.fragment.EditPropertyFragment;
 import com.openclassrooms.realestatemanager.view.fragment.LoanSimulatorFragment;
 import com.openclassrooms.realestatemanager.view.fragment.PropertyListFragment;
@@ -65,8 +66,11 @@ public class MainActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.action_add_property) {
                     openAddPropertyFragment();
                     return true;
-                } else if (menuItem.getItemId() == R.id.action_loan_simulator) { // 🔹 Ajout du simulateur
+                } else if (menuItem.getItemId() == R.id.action_loan_simulator) {
                     openLoanSimulatorFragment();
+                    return true;
+                } else if (menuItem.getItemId() == R.id.action_currency_converter) {
+                    openCurrencyConverterFragment();
                     return true;
                 }
                 return false;
@@ -83,7 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void openLoanSimulatorFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new LoanSimulatorFragment()) // Affiche LoanSimulatorFragment
+                .replace(R.id.fragment_container, new LoanSimulatorFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openCurrencyConverterFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new CurrencyConverterFragment())
                 .addToBackStack(null)
                 .commit();
     }

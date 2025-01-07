@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.openclassrooms.realestatemanager.R;
 
+import java.util.Locale;
+
 public class LoanSimulatorFragment extends Fragment {
 
     private EditText priceEditText, downPaymentEditText, interestRateEditText, durationEditText;
@@ -77,7 +79,8 @@ public class LoanSimulatorFragment extends Fragment {
 
         // Display result
         String resultText = String.format(
-                "Loan Amount: %.2f €\nMonthly Payment: %.2f €\nTotal Cost: %.2f €\nTotal Interest: %.2f €",
+                Locale.US,
+                "Loan Amount: %.2f $\nMonthly Payment: %.2f $\nTotal Cost: %.2f $\nTotal Interest: %.2f $",
                 loanAmount, monthlyPayment, totalCost, totalInterest
         );
         resultTextView.setText(resultText);

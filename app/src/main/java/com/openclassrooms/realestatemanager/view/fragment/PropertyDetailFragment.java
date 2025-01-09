@@ -139,6 +139,15 @@ public class PropertyDetailFragment extends Fragment {
             }
         });
 
+        mapImageView.setOnClickListener(v -> {
+            if (selectedProperty != null && selectedProperty.pointsOfInterest != null && !selectedProperty.pointsOfInterest.isEmpty()) {
+                PointOfInterestDialogFragment dialog = PointOfInterestDialogFragment.newInstance(selectedProperty.pointsOfInterest);
+                dialog.show(getParentFragmentManager(), "PointOfInterestDialog");
+            } else {
+                Toast.makeText(getContext(), "No points of interest available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         setupMenu(); // Ajout du menu dynamique
 
         // Écoute des mises à jour après modification d'une propriété

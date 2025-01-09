@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,13 +32,17 @@ import com.openclassrooms.realestatemanager.model.entity.Photo;
 import com.openclassrooms.realestatemanager.model.entity.PointOfInterest;
 import com.openclassrooms.realestatemanager.model.entity.Property;
 import com.openclassrooms.realestatemanager.notification.NotificationHelper;
+import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
 import com.openclassrooms.realestatemanager.view.adapter.PointOfInterestAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.AddPropertyViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AddPropertyFragment extends Fragment {
 
@@ -49,8 +57,12 @@ public class AddPropertyFragment extends Fragment {
     private List<Photo> photos = new ArrayList<>();
     private List<PointOfInterest> pointsOfInterest = new ArrayList<>();
     private AddPropertyViewModel addPropertyViewModel;
-
+    private Switch propertyStatusSwitch;
+    private Button selectMarketDateButton, selectSoldDateButton;
+    private TextView selectedMarketDateText, selectedSoldDateText;
+    private Date marketDate, soldDate;
     private ActivityResultLauncher<Intent> photoPickerLauncher;
+    private LinearLayout soldDateLayout;
 
     @Nullable
     @Override
@@ -76,6 +88,43 @@ public class AddPropertyFragment extends Fragment {
         addPhotoButton = view.findViewById(R.id.button_add_photo);
         addPointOfInterestButton = view.findViewById(R.id.button_add_point_of_interest);
         saveButton = view.findViewById(R.id.button_save);
+        propertyStatusSwitch = view.findViewById(R.id.switch_property_status);
+        selectMarketDateButton = view.findViewById(R.id.button_select_market_date);
+        selectedMarketDateText = view.findViewById(R.id.text_selected_market_date);
+        selectSoldDateButton = view.findViewById(R.id.button_select_sold_date);
+        selectedSoldDateText = view.findViewById(R.id.text_selected_sold_date);
+        soldDateLayout = view.findViewById(R.id.layout_sold_date);
+
+        // Initialiser la date d’entrée sur le marché avec la date du jour
+        marketDate = new Date();
+        selectedMarketDateText.setText(Utils.getTodayDate());
+
+        // Gestion de la visibilité des champs liés à la vente
+        propertyStatusSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectSoldDateButton.setVisibility(View.VISIBLE);
+                selectedSoldDateText.setVisibility(View.VISIBLE);
+                soldDateLayout.setVisibility(View.VISIBLE); // Affiche le layout contenant la date de vente
+            } else {
+                selectSoldDateButton.setVisibility(View.GONE);
+                selectedSoldDateText.setVisibility(View.GONE);
+                soldDateLayout.setVisibility(View.GONE); // Cache le layout lorsque le bien n'est pas vendu
+                soldDate = null;
+                selectedSoldDateText.setText("Not selected");
+            }
+        });
+
+        // Sélection de la date d’entrée sur le marché
+        selectMarketDateButton.setOnClickListener(v -> showDatePicker(date -> {
+            marketDate = date;
+            selectedMarketDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
+        }));
+
+        // Sélection de la date de vente
+        selectSoldDateButton.setOnClickListener(v -> showDatePicker(date -> {
+            soldDate = date;
+            selectedSoldDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
+        }));
 
         // Initialisation des RecyclerView
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -119,6 +168,26 @@ public class AddPropertyFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showDatePicker(OnDateSelectedListener listener) {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(year, month, dayOfMonth);
+                    listener.onDateSelected(selectedDate.getTime());
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    interface OnDateSelectedListener {
+        void onDateSelected(Date date);
     }
 
     private void showAddPhotoDialog() {
@@ -212,14 +281,23 @@ public class AddPropertyFragment extends Fragment {
         String zipCode = zipCodeEditText.getText().toString().trim();
         String country = countryEditText.getText().toString().trim();
 
+        // Définir si le bien est vendu
+        boolean isSold = propertyStatusSwitch.isChecked();
+
+        // Vérification obligatoire : si le bien est vendu, la date de vente doit être renseignée
+        if (isSold && soldDate == null) {
+            Toast.makeText(getContext(), "Please select a sold date.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Création de l'adresse
         Address address = new Address(street, city, state, zipCode, country);
 
-        // Création du bien immobilier avec photos optionnelles
+        // Création du bien avec les nouvelles données
         Property property = new Property(
                 type, price, surface, rooms, bathrooms, bedrooms, description,
-                address, photos.isEmpty() ? new ArrayList<>() : new ArrayList<>(photos), // Photos optionnelles
-                new ArrayList<>(pointsOfInterest), false, new Date(), null, agentName
+                address, photos.isEmpty() ? new ArrayList<>() : new ArrayList<>(photos),
+                new ArrayList<>(pointsOfInterest), isSold, marketDate, soldDate, agentName
         );
 
         // Observer l'insertion et attendre le retour avant d'afficher la notification

@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,8 +36,12 @@ import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
 import com.openclassrooms.realestatemanager.view.adapter.PointOfInterestAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.EditPropertyViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EditPropertyFragment extends Fragment {
 
@@ -49,7 +57,12 @@ public class EditPropertyFragment extends Fragment {
     private List<PointOfInterest> pointsOfInterest = new ArrayList<>();
     private EditPropertyViewModel editPropertyViewModel;
     private Property selectedProperty;
+    private Switch propertyStatusSwitch;
+    private Button selectMarketDateButton, selectSoldDateButton;
+    private TextView selectedMarketDateText, selectedSoldDateText;
+    private Date marketDate, soldDate;
     private ActivityResultLauncher<Intent> photoPickerLauncher;
+    private LinearLayout soldDateLayout;
 
     @Nullable
     @Override
@@ -75,6 +88,39 @@ public class EditPropertyFragment extends Fragment {
         addPhotoButton = view.findViewById(R.id.button_add_photo);
         addPointOfInterestButton = view.findViewById(R.id.button_add_point_of_interest);
         updateButton = view.findViewById(R.id.button_update);
+        propertyStatusSwitch = view.findViewById(R.id.switch_property_status);
+        selectMarketDateButton = view.findViewById(R.id.button_select_market_date);
+        selectedMarketDateText = view.findViewById(R.id.text_selected_market_date);
+        selectSoldDateButton = view.findViewById(R.id.button_select_sold_date);
+        selectedSoldDateText = view.findViewById(R.id.text_selected_sold_date);
+        soldDateLayout = view.findViewById(R.id.layout_sold_date);
+
+        // Gestion de la visibilité des champs liés à la vente
+        propertyStatusSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectSoldDateButton.setVisibility(View.VISIBLE);
+                selectedSoldDateText.setVisibility(View.VISIBLE);
+                soldDateLayout.setVisibility(View.VISIBLE); // Affiche le layout contenant la date de vente
+            } else {
+                selectSoldDateButton.setVisibility(View.GONE);
+                selectedSoldDateText.setVisibility(View.GONE);
+                soldDateLayout.setVisibility(View.GONE); // Cache le layout lorsque le bien n'est pas vendu
+                soldDate = null;
+                selectedSoldDateText.setText("Not selected");
+            }
+        });
+
+        // Sélection de la date d’entrée sur le marché
+        selectMarketDateButton.setOnClickListener(v -> showDatePicker(date -> {
+            marketDate = date;
+            selectedMarketDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
+        }));
+
+        // Sélection de la date de vente
+        selectSoldDateButton.setOnClickListener(v -> showDatePicker(date -> {
+            soldDate = date;
+            selectedSoldDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
+        }));
 
         // Initialisation des RecyclerView
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -128,6 +174,26 @@ public class EditPropertyFragment extends Fragment {
         return view;
     }
 
+    private void showDatePicker(OnDateSelectedListener listener) {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(year, month, dayOfMonth);
+                    listener.onDateSelected(selectedDate.getTime());
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    interface OnDateSelectedListener {
+        void onDateSelected(Date date);
+    }
+
     private void loadSelectedProperty(int propertyId) {
         editPropertyViewModel.getPropertyById(propertyId).observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
@@ -140,6 +206,8 @@ public class EditPropertyFragment extends Fragment {
     }
 
     private void populateFields(Property property) {
+        selectedProperty = property;
+
         typeEditText.setText(property.type);
         priceEditText.setText(String.valueOf(property.price));
         surfaceEditText.setText(String.valueOf(property.surface));
@@ -165,6 +233,24 @@ public class EditPropertyFragment extends Fragment {
         pointsOfInterest.clear();
         pointsOfInterest.addAll(property.pointsOfInterest);
         pointOfInterestAdapter.notifyDataSetChanged();
+
+        // Initialiser les nouvelles données
+        propertyStatusSwitch.setChecked(property.isSold);
+        marketDate = property.marketDate != null ? property.marketDate : new Date();
+        selectedMarketDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(marketDate));
+
+        if (property.isSold) {
+            soldDate = property.soldDate;
+            selectedSoldDateText.setText(soldDate != null ?
+                    new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(soldDate) : "Not selected");
+            selectSoldDateButton.setVisibility(View.VISIBLE);
+            selectedSoldDateText.setVisibility(View.VISIBLE);
+        } else {
+            soldDate = null;
+            selectedSoldDateText.setText("Not selected");
+            selectSoldDateButton.setVisibility(View.GONE);
+            selectedSoldDateText.setVisibility(View.GONE);
+        }
     }
 
     private void showAddPhotoDialog() {
@@ -251,6 +337,16 @@ public class EditPropertyFragment extends Fragment {
         String zipCode = zipCodeEditText.getText().toString().trim();
         String country = countryEditText.getText().toString().trim();
 
+        // Vérifier si le bien est vendu et si une date de vente est fournie
+        boolean isSold = propertyStatusSwitch.isChecked();
+        if (isSold && soldDate == null) {
+            Toast.makeText(getContext(), "Please select a sold date.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Création de l'adresse mise à jour
+        Address newAddress = new Address(street, city, state, zipCode, country);
+
         // Vérifier si une mise à jour est nécessaire avant modification
         boolean isUpdated = false;
 
@@ -282,10 +378,28 @@ public class EditPropertyFragment extends Fragment {
             selectedProperty.description = description;
             isUpdated = true;
         }
-
-        Address newAddress = new Address(street, city, state, zipCode, country);
         if (!selectedProperty.address.equals(newAddress)) {
             selectedProperty.address = newAddress;
+            isUpdated = true;
+        }
+        if (!selectedProperty.agentName.equals(agentName)) {
+            selectedProperty.agentName = agentName;
+            isUpdated = true;
+        }
+
+        // Mise à jour du statut du bien
+        if (selectedProperty.isSold != isSold) {
+            selectedProperty.isSold = isSold;
+            isUpdated = true;
+        }
+
+        // Mise à jour des dates
+        if (areDatesDifferent(selectedProperty.marketDate, marketDate)) {
+            selectedProperty.marketDate = marketDate;
+            isUpdated = true;
+        }
+        if (isSold && areDatesDifferent(selectedProperty.soldDate, soldDate)) {
+            selectedProperty.soldDate = soldDate;
             isUpdated = true;
         }
 
@@ -296,11 +410,6 @@ public class EditPropertyFragment extends Fragment {
         }
         if (!selectedProperty.pointsOfInterest.equals(pointsOfInterest)) {
             selectedProperty.pointsOfInterest = new ArrayList<>(pointsOfInterest);
-            isUpdated = true;
-        }
-
-        if (!selectedProperty.agentName.equals(agentName)) {
-            selectedProperty.agentName = agentName;
             isUpdated = true;
         }
 
@@ -317,6 +426,15 @@ public class EditPropertyFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "No changes detected.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Compare deux dates en tenant compte des valeurs nulles.
+     */
+    private boolean areDatesDifferent(Date date1, Date date2) {
+        if (date1 == null && date2 == null) return false;
+        if (date1 == null || date2 == null) return true;
+        return !date1.equals(date2);
     }
 
     /**

@@ -178,30 +178,48 @@ public class AddPropertyFragment extends Fragment {
         photoAdapter.setPhotos(new ArrayList<>(photos));
         pointOfInterestAdapter.setPointsOfInterest(new ArrayList<>(pointsOfInterest));
 
+        // Champs obligatoires
         String type = typeEditText.getText().toString().trim();
-        double price = Double.parseDouble(priceEditText.getText().toString().trim());
-        double surface = Double.parseDouble(surfaceEditText.getText().toString().trim());
-        int rooms = Integer.parseInt(roomsEditText.getText().toString().trim());
-        int bathrooms = Integer.parseInt(bathroomsEditText.getText().toString().trim());
-        int bedrooms = Integer.parseInt(bedroomsEditText.getText().toString().trim());
-        String description = descriptionEditText.getText().toString().trim();
+        String priceStr = priceEditText.getText().toString().trim();
+        String surfaceStr = surfaceEditText.getText().toString().trim();
         String street = streetEditText.getText().toString().trim();
         String city = cityEditText.getText().toString().trim();
-        String state = stateEditText.getText().toString().trim();
-        String zipCode = zipCodeEditText.getText().toString().trim();
-        String country = countryEditText.getText().toString().trim();
         String agentName = agentEditText.getText().toString().trim();
 
-        if (type.isEmpty() || price <= 0 || surface <= 0 || street.isEmpty() || city.isEmpty()) {
-            Toast.makeText(getContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
+        // Vérifier les champs obligatoires
+        if (type.isEmpty() || priceStr.isEmpty() || surfaceStr.isEmpty() || street.isEmpty() || city.isEmpty() || agentName.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill all required fields.", Toast.LENGTH_LONG).show();
             return;
         }
 
+        // Convertir les valeurs numériques avec gestion des erreurs
+        double price;
+        double surface;
+        try {
+            price = Double.parseDouble(priceStr);
+            surface = Double.parseDouble(surfaceStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Invalid price or surface value.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Champs optionnels avec valeurs par défaut
+        int rooms = safeParseInt(roomsEditText.getText().toString().trim());
+        int bathrooms = safeParseInt(bathroomsEditText.getText().toString().trim());
+        int bedrooms = safeParseInt(bedroomsEditText.getText().toString().trim());
+        String description = descriptionEditText.getText().toString().trim();
+        String state = stateEditText.getText().toString().trim();
+        String zipCode = zipCodeEditText.getText().toString().trim();
+        String country = countryEditText.getText().toString().trim();
+
+        // Création de l'adresse
         Address address = new Address(street, city, state, zipCode, country);
 
+        // Création du bien immobilier avec photos optionnelles
         Property property = new Property(
                 type, price, surface, rooms, bathrooms, bedrooms, description,
-                address, new ArrayList<>(photos), new ArrayList<>(pointsOfInterest), false, new Date(), null, agentName
+                address, photos.isEmpty() ? new ArrayList<>() : new ArrayList<>(photos), // Photos optionnelles
+                new ArrayList<>(pointsOfInterest), false, new Date(), null, agentName
         );
 
         // Observer l'insertion et attendre le retour avant d'afficher la notification
@@ -225,5 +243,16 @@ public class AddPropertyFragment extends Fragment {
                 Toast.makeText(getContext(), "Error saving property. Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Convertit une chaîne en entier avec gestion des erreurs.
+     */
+    private int safeParseInt(String text) {
+        try {
+            return text.isEmpty() ? 0 : Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0; // Retourne 0 en cas d'erreur
+        }
     }
 }

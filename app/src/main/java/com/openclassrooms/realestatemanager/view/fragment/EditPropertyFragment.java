@@ -218,33 +218,115 @@ public class EditPropertyFragment extends Fragment {
     }
 
     private void updateProperty() {
-        selectedProperty.type = typeEditText.getText().toString().trim();
-        selectedProperty.price = Double.parseDouble(priceEditText.getText().toString().trim());
-        selectedProperty.surface = Double.parseDouble(surfaceEditText.getText().toString().trim());
-        selectedProperty.numberOfRooms = Integer.parseInt(roomsEditText.getText().toString().trim());
-        selectedProperty.numberOfBathrooms = Integer.parseInt(bathroomsEditText.getText().toString().trim());
-        selectedProperty.numberOfBedrooms = Integer.parseInt(bedroomsEditText.getText().toString().trim());
-        selectedProperty.description = descriptionEditText.getText().toString().trim();
+        // Vérifier les champs obligatoires
+        String type = typeEditText.getText().toString().trim();
+        String priceStr = priceEditText.getText().toString().trim();
+        String surfaceStr = surfaceEditText.getText().toString().trim();
+        String street = streetEditText.getText().toString().trim();
+        String city = cityEditText.getText().toString().trim();
+        String agentName = agentEditText.getText().toString().trim();
 
-        selectedProperty.address = new Address(
-                streetEditText.getText().toString().trim(),
-                cityEditText.getText().toString().trim(),
-                stateEditText.getText().toString().trim(),
-                zipCodeEditText.getText().toString().trim(),
-                countryEditText.getText().toString().trim()
-        );
+        if (type.isEmpty() || priceStr.isEmpty() || surfaceStr.isEmpty() || street.isEmpty() || city.isEmpty() || agentName.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill all required fields.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        // Ajout de la mise à jour explicite des listes avant sauvegarde
-        selectedProperty.photos = new ArrayList<>(photos);
-        selectedProperty.pointsOfInterest = new ArrayList<>(pointsOfInterest);
+        // Convertir les valeurs numériques avec gestion des erreurs
+        double price;
+        double surface;
+        try {
+            price = Double.parseDouble(priceStr);
+            surface = Double.parseDouble(surfaceStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Invalid price or surface value.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        editPropertyViewModel.updateProperty(selectedProperty);
+        // Champs optionnels avec valeurs par défaut
+        int rooms = safeParseInt(roomsEditText.getText().toString().trim());
+        int bathrooms = safeParseInt(bathroomsEditText.getText().toString().trim());
+        int bedrooms = safeParseInt(bedroomsEditText.getText().toString().trim());
+        String description = descriptionEditText.getText().toString().trim();
+        String state = stateEditText.getText().toString().trim();
+        String zipCode = zipCodeEditText.getText().toString().trim();
+        String country = countryEditText.getText().toString().trim();
 
-        // Envoyer un signal de mise à jour après modification
-        Bundle result = new Bundle();
-        result.putBoolean("property_updated", true);
-        getParentFragmentManager().setFragmentResult("update_property_list", result);
+        // Vérifier si une mise à jour est nécessaire avant modification
+        boolean isUpdated = false;
 
-        requireActivity().getSupportFragmentManager().popBackStack();
+        if (!selectedProperty.type.equals(type)) {
+            selectedProperty.type = type;
+            isUpdated = true;
+        }
+        if (selectedProperty.price != price) {
+            selectedProperty.price = price;
+            isUpdated = true;
+        }
+        if (selectedProperty.surface != surface) {
+            selectedProperty.surface = surface;
+            isUpdated = true;
+        }
+        if (selectedProperty.numberOfRooms != rooms) {
+            selectedProperty.numberOfRooms = rooms;
+            isUpdated = true;
+        }
+        if (selectedProperty.numberOfBathrooms != bathrooms) {
+            selectedProperty.numberOfBathrooms = bathrooms;
+            isUpdated = true;
+        }
+        if (selectedProperty.numberOfBedrooms != bedrooms) {
+            selectedProperty.numberOfBedrooms = bedrooms;
+            isUpdated = true;
+        }
+        if (!selectedProperty.description.equals(description)) {
+            selectedProperty.description = description;
+            isUpdated = true;
+        }
+
+        Address newAddress = new Address(street, city, state, zipCode, country);
+        if (!selectedProperty.address.equals(newAddress)) {
+            selectedProperty.address = newAddress;
+            isUpdated = true;
+        }
+
+        // Mise à jour explicite des listes avant sauvegarde
+        if (!selectedProperty.photos.equals(photos)) {
+            selectedProperty.photos = new ArrayList<>(photos);
+            isUpdated = true;
+        }
+        if (!selectedProperty.pointsOfInterest.equals(pointsOfInterest)) {
+            selectedProperty.pointsOfInterest = new ArrayList<>(pointsOfInterest);
+            isUpdated = true;
+        }
+
+        if (!selectedProperty.agentName.equals(agentName)) {
+            selectedProperty.agentName = agentName;
+            isUpdated = true;
+        }
+
+        // Vérifier si des changements ont été effectués avant d'envoyer la mise à jour
+        if (isUpdated) {
+            editPropertyViewModel.updateProperty(selectedProperty);
+
+            // Envoyer un signal de mise à jour après modification
+            Bundle result = new Bundle();
+            result.putBoolean("property_updated", true);
+            getParentFragmentManager().setFragmentResult("update_property_list", result);
+
+            requireActivity().getSupportFragmentManager().popBackStack();
+        } else {
+            Toast.makeText(getContext(), "No changes detected.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Convertit une chaîne en entier avec gestion des erreurs.
+     */
+    private int safeParseInt(String text) {
+        try {
+            return text.isEmpty() ? 0 : Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0; // Retourne 0 en cas d'erreur
+        }
     }
 }

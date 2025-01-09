@@ -27,6 +27,7 @@ import com.openclassrooms.realestatemanager.model.entity.Address;
 import com.openclassrooms.realestatemanager.model.entity.Photo;
 import com.openclassrooms.realestatemanager.model.entity.PointOfInterest;
 import com.openclassrooms.realestatemanager.model.entity.Property;
+import com.openclassrooms.realestatemanager.notification.NotificationHelper;
 import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
 import com.openclassrooms.realestatemanager.view.adapter.PointOfInterestAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.AddPropertyViewModel;
@@ -173,7 +174,7 @@ public class AddPropertyFragment extends Fragment {
     }
 
     private void saveProperty() {
-        // Met à jour les listes avec les dernières suppressions et ajouts
+        // Mise à jour des listes avec les dernières suppressions et ajouts
         photoAdapter.setPhotos(new ArrayList<>(photos));
         pointOfInterestAdapter.setPointsOfInterest(new ArrayList<>(pointsOfInterest));
 
@@ -203,13 +204,26 @@ public class AddPropertyFragment extends Fragment {
                 address, new ArrayList<>(photos), new ArrayList<>(pointsOfInterest), false, new Date(), null, agentName
         );
 
-        addPropertyViewModel.insertProperty(property);
+        // Observer l'insertion et attendre le retour avant d'afficher la notification
+        addPropertyViewModel.insertProperty(property).observe(getViewLifecycleOwner(), success -> {
+            if (Boolean.TRUE.equals(success)) {
+                // Notification uniquement si l'insertion a réussi
+                NotificationHelper.showNotification(
+                        requireContext(),
+                        "Property Added",
+                        "The property at " + address.street + ", " + address.city + " has been added successfully."
+                );
 
-        // Envoyer un signal de mise à jour après l'ajout
-        Bundle result = new Bundle();
-        result.putBoolean("property_updated", true);
-        getParentFragmentManager().setFragmentResult("update_property_list", result);
+                // Envoyer un signal de mise à jour après l'ajout
+                Bundle result = new Bundle();
+                result.putBoolean("property_updated", true);
+                getParentFragmentManager().setFragmentResult("update_property_list", result);
 
-        requireActivity().getSupportFragmentManager().popBackStack();
+                // Fermer le fragment après ajout
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                Toast.makeText(getContext(), "Error saving property. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

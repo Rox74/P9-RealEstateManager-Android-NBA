@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.repository;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.openclassrooms.realestatemanager.model.dao.PropertyDao;
@@ -51,8 +52,15 @@ public class PropertyRepository {
      *
      * @param property The property object to insert.
      */
-    public void insert(Property property) {
-        PropertyDatabase.databaseWriteExecutor.execute(() -> propertyDao.insert(property));
+    public LiveData<Boolean> insert(Property property) {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        PropertyDatabase.databaseWriteExecutor.execute(() -> {
+            long insertedId = propertyDao.insert(property);
+            result.postValue(insertedId != -1); // Vérifie si l'insertion a réussi (id > 0)
+        });
+
+        return result;
     }
 
     /**

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,9 @@ import com.openclassrooms.realestatemanager.view.adapter.PhotoAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.MapViewModel;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class PropertyDetailFragment extends Fragment {
     private static final String ARG_PROPERTY = "property";
     private Property selectedProperty;
@@ -44,6 +48,10 @@ public class PropertyDetailFragment extends Fragment {
     private TextView bedroomsTextView;
     private TextView locationTextView;
     private ImageView mapImageView;
+    private TextView propertyStatusTextView;
+    private TextView marketDateTextView;
+    private TextView soldDateTextView;
+    private LinearLayout soldDateSection;
 
     public static PropertyDetailFragment newInstance(Property property) {
         PropertyDetailFragment fragment = new PropertyDetailFragment();
@@ -71,6 +79,10 @@ public class PropertyDetailFragment extends Fragment {
         bedroomsTextView = view.findViewById(R.id.property_bedrooms);
         locationTextView = view.findViewById(R.id.property_location);
         mapImageView = view.findViewById(R.id.property_map);
+        propertyStatusTextView = view.findViewById(R.id.property_status);
+        marketDateTextView = view.findViewById(R.id.property_market_date);
+        soldDateTextView = view.findViewById(R.id.property_sold_date);
+        soldDateSection = view.findViewById(R.id.property_sold_date_section);
 
         // Configuration RecyclerView pour les photos
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -96,7 +108,7 @@ public class PropertyDetailFragment extends Fragment {
         // Observer les données du ViewModel
         propertyDetailViewModel.getSelectedProperty().observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
-                selectedProperty = property; // Stocke la propriété pour l'édition
+                selectedProperty = property;
                 descriptionTextView.setText(property.description);
                 surfaceTextView.setText(property.surface + " m²");
                 roomsTextView.setText(String.valueOf(property.numberOfRooms));
@@ -107,6 +119,23 @@ public class PropertyDetailFragment extends Fragment {
 
                 // Charger la carte via la méthode
                 loadStaticMap(property.address);
+
+                // Affichage du statut du bien
+                propertyStatusTextView.setText(property.isSold ? "Sold" : "Available");
+
+                // Affichage de la date d'entrée sur le marché
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                marketDateTextView.setText(property.marketDate != null ? sdf.format(property.marketDate) : "Not specified");
+
+                // Affichage conditionnel de la date de vente uniquement si vendu
+                if (property.isSold && property.soldDate != null) {
+                    soldDateSection.setVisibility(View.VISIBLE);  // Afficher toute la section
+                    soldDateTextView.setVisibility(View.VISIBLE);  // Afficher la date
+                    soldDateTextView.setText(sdf.format(property.soldDate));
+                } else {
+                    soldDateSection.setVisibility(View.GONE);  // Cacher toute la section
+                    soldDateTextView.setVisibility(View.GONE);  // Cacher la date aussi
+                }
             }
         });
 

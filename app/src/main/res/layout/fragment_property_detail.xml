@@ -11,7 +11,7 @@
         android:id="@+id/section_media_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Media"
+        android:text="@string/media"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Description"
+        android:text="@string/description"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/property_photos"
@@ -45,7 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="No description provided"
+        android:text="@string/no_description_provided"
         app:layout_constraintTop_toBottomOf="@id/section_description_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -54,13 +54,12 @@
     <LinearLayout
         android:id="@+id/property_bottom_section"
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/property_description"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Colonne 1 : Détails -->
         <LinearLayout
@@ -85,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Surface"
+                    android:text="@string/surface"
                     android:textStyle="bold" />
             </LinearLayout>
             <TextView
@@ -94,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="Surface information not available" />
+                android:text="@string/not_specified" />
 
             <!-- Détail : Rooms -->
             <LinearLayout
@@ -110,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Number of Rooms"
+                    android:text="@string/number_of_rooms"
                     android:textStyle="bold" />
             </LinearLayout>
             <TextView
@@ -119,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="Number of rooms not specified" />
+                android:text="@string/not_specified" />
 
             <!-- Détail : Bathrooms -->
             <LinearLayout
@@ -135,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Number of Bathrooms"
+                    android:text="@string/number_of_bathrooms"
                     android:textStyle="bold" />
             </LinearLayout>
             <TextView
@@ -144,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="Number of bathrooms not provided" />
+                android:text="@string/not_specified" />
 
             <!-- Détail : Bedrooms -->
             <LinearLayout
@@ -160,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Number of Bedrooms"
+                    android:text="@string/number_of_bedrooms"
                     android:textStyle="bold" />
             </LinearLayout>
             <TextView
@@ -169,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="32dp"
-                android:text="Number of bedrooms not listed" />
+                android:text="@string/not_specified" />
         </LinearLayout>
 
         <!-- Colonne 2 : Localisation -->
@@ -195,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Location"
+                    android:text="@string/location"
                     android:textStyle="bold" />
             </LinearLayout>
             <TextView
@@ -204,7 +203,85 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginTop="8dp"
-                android:text="Address not available" />
+                android:text="@string/not_specified" />
+
+            <!-- Statut du bien -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_status" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/status"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/property_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:text="@string/not_specified" />
+
+            <!-- Date d'entrée sur le marché -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/market_date"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/property_market_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:text="@string/not_specified" />
+
+            <!-- Date de vente (s'affiche uniquement si vendu) -->
+            <LinearLayout
+                android:id="@+id/property_sold_date_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_sold_date" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/sold_date"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/property_sold_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:text="@string/not_specified"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Colonne 3 : Carte avec ombrage -->

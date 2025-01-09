@@ -51,6 +51,7 @@ public class PropertyDetailFragment extends Fragment {
     private TextView propertyStatusTextView;
     private TextView marketDateTextView;
     private TextView soldDateTextView;
+    private TextView agentTextView;
     private LinearLayout soldDateSection;
 
     public static PropertyDetailFragment newInstance(Property property) {
@@ -83,6 +84,7 @@ public class PropertyDetailFragment extends Fragment {
         marketDateTextView = view.findViewById(R.id.property_market_date);
         soldDateTextView = view.findViewById(R.id.property_sold_date);
         soldDateSection = view.findViewById(R.id.property_sold_date_section);
+        agentTextView = view.findViewById(R.id.property_agent);
 
         // Configuration RecyclerView pour les photos
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -115,6 +117,9 @@ public class PropertyDetailFragment extends Fragment {
                 bathroomsTextView.setText(String.valueOf(property.numberOfBathrooms));
                 bedroomsTextView.setText(String.valueOf(property.numberOfBedrooms));
                 locationTextView.setText(formatPropertyLocation(property.address));
+                agentTextView.setText(property.agentName != null && !property.agentName.isEmpty()
+                        ? property.agentName
+                        : getString(R.string.not_specified));
                 photoAdapter.setPhotos(property.photos);
 
                 // Charger la carte via la méthode

@@ -6,13 +6,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Sélection d'une image -->
-    <Button
-        android:id="@+id/button_select_photo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Photo" />
-
     <!-- Description de la photo -->
     <EditText
         android:id="@+id/edit_text_photo_description"

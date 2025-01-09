@@ -4,7 +4,6 @@
     <string name="description">Description</string>
     <string name="no_description_provided">No description provided</string>
     <string name="surface">Surface</string>
-    <string name="not_specified">Not specified</string>
     <string name="number_of_rooms">Number of Rooms</string>
     <string name="number_of_bathrooms">Number of Bathrooms</string>
     <string name="number_of_bedrooms">Number of Bedrooms</string>
@@ -14,4 +13,6 @@
     <string name="sold_date">Sold Date</string>
     <string name="points_of_interest">Points of Interest</string>
     <string name="close">Close</string>
+    <string name="agent">Agent</string>
+    <string name="not_specified">Not specified</string>
 </resources>

@@ -110,4 +110,11 @@ public class PropertyRepository {
             return filteredProperties;
         });
     }
+
+    /**
+     * Deletes all properties from the database asynchronously.
+     */
+    public void deleteAllProperties() {
+        PropertyDatabase.databaseWriteExecutor.execute(propertyDao::deleteAllProperties);
+    }
 }

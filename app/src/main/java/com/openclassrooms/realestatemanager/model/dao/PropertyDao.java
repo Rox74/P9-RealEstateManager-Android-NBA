@@ -86,6 +86,9 @@ public interface PropertyDao {
     @Query("DELETE FROM property WHERE id = :id")
     int deleteById(long id);
 
+    @Query("DELETE FROM property")
+    void deleteAllProperties();
+
     @Query("SELECT * FROM property WHERE " +
             "(:minPrice = 0 OR price >= :minPrice) AND " +
             "(:maxPrice = 0 OR price <= :maxPrice) AND " +

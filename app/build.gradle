@@ -37,6 +37,10 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+
     dependencies {
         // AndroidX
         implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -57,10 +61,15 @@ android {
         implementation 'androidx.lifecycle:lifecycle-livedata:2.8.7'
         implementation 'androidx.lifecycle:lifecycle-runtime:2.8.7'
 
-        // Tests unitaires
+        // Tests
         testImplementation 'junit:junit:4.13.2'
+        testImplementation 'androidx.test:core:1.6.1'
+        testImplementation 'org.mockito:mockito-core:5.3.1'
+        testImplementation 'androidx.arch.core:core-testing:2.2.0'
         androidTestImplementation 'androidx.test.ext:junit:1.2.1'
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+        androidTestImplementation 'org.mockito:mockito-android:5.3.1'
+        androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 
         // Glide pour le chargement des images
         implementation 'com.github.bumptech.glide:glide:4.15.1'

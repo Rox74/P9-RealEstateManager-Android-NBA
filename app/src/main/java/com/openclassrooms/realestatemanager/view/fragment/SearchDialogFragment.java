@@ -16,8 +16,10 @@ import com.openclassrooms.realestatemanager.model.entity.SearchCriteria;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
+/**
+ * Dialog fragment for performing an advanced property search.
+ * Users can specify search criteria such as price, surface area, number of rooms, and location.
+ */
 public class SearchDialogFragment extends DialogFragment {
 
     private EditText minPriceEditText, maxPriceEditText, minSurfaceEditText, maxSurfaceEditText;
@@ -27,10 +29,18 @@ public class SearchDialogFragment extends DialogFragment {
 
     private OnSearchListener searchListener;
 
+    /**
+     * Interface for handling search actions.
+     */
     public interface OnSearchListener {
         void onSearch(SearchCriteria criteria);
     }
 
+    /**
+     * Sets the listener for handling search actions.
+     *
+     * @param listener The listener to be notified when a search is performed.
+     */
     public void setOnSearchListener(OnSearchListener listener) {
         this.searchListener = listener;
     }
@@ -41,7 +51,7 @@ public class SearchDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_search, null);
 
-        // Initialisation des champs de recherche
+        // Initialize search fields
         minPriceEditText = view.findViewById(R.id.edit_text_min_price);
         maxPriceEditText = view.findViewById(R.id.edit_text_max_price);
         minSurfaceEditText = view.findViewById(R.id.edit_text_min_surface);
@@ -52,7 +62,7 @@ public class SearchDialogFragment extends DialogFragment {
         searchButton = view.findViewById(R.id.button_search);
         cancelButton = view.findViewById(R.id.button_cancel);
 
-        // Gestion du bouton de recherche
+        // Handle search button click
         searchButton.setOnClickListener(v -> {
             SearchCriteria criteria = new SearchCriteria(
                     safeParseDouble(minPriceEditText.getText().toString()),
@@ -65,12 +75,12 @@ public class SearchDialogFragment extends DialogFragment {
             );
 
             if (searchListener != null) {
-                searchListener.onSearch(criteria);
+                searchListener.onSearch(criteria); // Pass search criteria to listener
             }
             dismiss();
         });
 
-        // Gestion du bouton Annuler
+        // Handle cancel button click
         cancelButton.setOnClickListener(v -> dismiss());
 
         builder.setView(view);
@@ -80,24 +90,30 @@ public class SearchDialogFragment extends DialogFragment {
     }
 
     /**
-     * Convertit une chaîne en double, en évitant les erreurs de conversion.
+     * Safely parses a string into a double to prevent conversion errors.
+     *
+     * @param text The input string to convert.
+     * @return The parsed double value, or 0 if conversion fails.
      */
     private double safeParseDouble(String text) {
         try {
             return text != null && !text.trim().isEmpty() ? Double.parseDouble(text.trim()) : 0;
         } catch (NumberFormatException e) {
-            return 0; // Retourne 0 en cas d'erreur
+            return 0; // Returns 0 in case of an error
         }
     }
 
     /**
-     * Convertit une chaîne en int, en évitant les erreurs de conversion.
+     * Safely parses a string into an integer to prevent conversion errors.
+     *
+     * @param text The input string to convert.
+     * @return The parsed integer value, or 0 if conversion fails.
      */
     private int safeParseInt(String text) {
         try {
             return text != null && !text.trim().isEmpty() ? Integer.parseInt(text.trim()) : 0;
         } catch (NumberFormatException e) {
-            return 0; // Retourne 0 en cas d'erreur
+            return 0; // Returns 0 in case of an error
         }
     }
 }

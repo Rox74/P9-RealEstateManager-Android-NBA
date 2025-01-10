@@ -19,11 +19,21 @@ import com.openclassrooms.realestatemanager.view.adapter.PointOfInterestAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DialogFragment for displaying a list of points of interest (POI) related to a property.
+ * This dialog presents a RecyclerView with POI information and a close button.
+ */
 public class PointOfInterestDialogFragment extends DialogFragment {
 
-    private static final String ARG_POINTS_OF_INTEREST = "points_of_interest";
-    private List<PointOfInterest> pointsOfInterest;
+    private static final String ARG_POINTS_OF_INTEREST = "points_of_interest"; // Key for arguments bundle
+    private List<PointOfInterest> pointsOfInterest; // List of points of interest
 
+    /**
+     * Creates a new instance of PointOfInterestDialogFragment with the provided POI list.
+     *
+     * @param pointsOfInterest List of points of interest to display.
+     * @return A new instance of PointOfInterestDialogFragment.
+     */
     public static PointOfInterestDialogFragment newInstance(List<PointOfInterest> pointsOfInterest) {
         PointOfInterestDialogFragment fragment = new PointOfInterestDialogFragment();
         Bundle args = new Bundle();
@@ -35,20 +45,26 @@ public class PointOfInterestDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the dialog layout
         View view = inflater.inflate(R.layout.dialog_point_of_interest, container, false);
+
+        // Initialize UI components
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_poi);
         Button closeButton = view.findViewById(R.id.button_close_poi);
 
+        // Retrieve the list of points of interest from the arguments
         if (getArguments() != null) {
             pointsOfInterest = getArguments().getParcelableArrayList(ARG_POINTS_OF_INTEREST);
         }
 
-        // Configuration du RecyclerView
+        // Configure RecyclerView with a LinearLayoutManager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Set up the adapter for displaying POIs (not editable mode)
         PointOfInterestAdapter adapter = new PointOfInterestAdapter(pointsOfInterest, false, null);
         recyclerView.setAdapter(adapter);
 
-        // Bouton de fermeture
+        // Handle close button click to dismiss the dialog
         closeButton.setOnClickListener(v -> dismiss());
 
         return view;

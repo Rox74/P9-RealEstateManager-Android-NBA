@@ -43,8 +43,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Fragment for editing an existing property.
+ * Allows users to update property details, add/remove photos, and manage points of interest.
+ */
 public class EditPropertyFragment extends Fragment {
 
+    // UI elements for property details
     private EditText typeEditText, priceEditText, surfaceEditText, roomsEditText,
             bathroomsEditText, bedroomsEditText, descriptionEditText,
             streetEditText, cityEditText, stateEditText, zipCodeEditText,
@@ -69,7 +74,7 @@ public class EditPropertyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_property, container, false);
 
-        // Initialisation des vues
+        // Initialize UI components
         typeEditText = view.findViewById(R.id.edit_text_type);
         priceEditText = view.findViewById(R.id.edit_text_price);
         surfaceEditText = view.findViewById(R.id.edit_text_surface);
@@ -95,42 +100,43 @@ public class EditPropertyFragment extends Fragment {
         selectedSoldDateText = view.findViewById(R.id.text_selected_sold_date);
         soldDateLayout = view.findViewById(R.id.layout_sold_date);
 
-        // Gestion de la visibilité des champs liés à la vente
+        // Handle property status switch (Sold/Available)
         propertyStatusSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 selectSoldDateButton.setVisibility(View.VISIBLE);
                 selectedSoldDateText.setVisibility(View.VISIBLE);
-                soldDateLayout.setVisibility(View.VISIBLE); // Affiche le layout contenant la date de vente
+                soldDateLayout.setVisibility(View.VISIBLE); // Show the sold date layout
             } else {
                 selectSoldDateButton.setVisibility(View.GONE);
                 selectedSoldDateText.setVisibility(View.GONE);
-                soldDateLayout.setVisibility(View.GONE); // Cache le layout lorsque le bien n'est pas vendu
+                soldDateLayout.setVisibility(View.GONE); // Hide the layout when property is not sold
                 soldDate = null;
                 selectedSoldDateText.setText("Not selected");
             }
         });
 
-        // Sélection de la date d’entrée sur le marché
+        // Select market entry date
         selectMarketDateButton.setOnClickListener(v -> showDatePicker(date -> {
             marketDate = date;
             selectedMarketDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
         }));
 
-        // Sélection de la date de vente
+        // Select sold date
         selectSoldDateButton.setOnClickListener(v -> showDatePicker(date -> {
             soldDate = date;
             selectedSoldDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(date));
         }));
 
-        // Initialisation des RecyclerView
+        // Initialize RecyclerView for photos
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         photoAdapter = new PhotoAdapter(true, updatedPhotos -> {
             photos.clear();
             photos.addAll(updatedPhotos);
-            photoAdapter.setPhotos(photos); // Mise à jour explicite
+            photoAdapter.setPhotos(photos); // Explicitly update adapter
         });
         photoRecyclerView.setAdapter(photoAdapter);
 
+        // Initialize RecyclerView for points of interest
         pointsOfInterestRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         pointOfInterestAdapter = new PointOfInterestAdapter(pointsOfInterest, true, updatedPointsOfInterest -> {
             pointsOfInterest.clear();
@@ -138,13 +144,13 @@ public class EditPropertyFragment extends Fragment {
         });
         pointsOfInterestRecyclerView.setAdapter(pointOfInterestAdapter);
 
-        // Initialisation du ViewModel
+        // Initialize ViewModel
         editPropertyViewModel = new ViewModelProvider(
                 this,
                 ViewModelFactory.getInstance(requireActivity().getApplication())
         ).get(EditPropertyViewModel.class);
 
-        // Récupérer l'ID de la propriété à modifier
+        // Retrieve the selected property ID from arguments
         if (getArguments() != null) {
             int propertyId = getArguments().getInt("property_id", -1);
             if (propertyId != -1) {
@@ -152,16 +158,16 @@ public class EditPropertyFragment extends Fragment {
             }
         }
 
-        // Gestion du clic sur "Add Photo"
+        // Handle "Add Photo" button click
         addPhotoButton.setOnClickListener(v -> showAddPhotoDialog());
 
-        // Gestion du clic sur "Add Point of Interest"
+        // Handle "Add Point of Interest" button click
         addPointOfInterestButton.setOnClickListener(v -> addPointOfInterest());
 
-        // Gestion du clic sur "Update Property"
+        // Handle "Update Property" button click
         updateButton.setOnClickListener(v -> updateProperty());
 
-        // Initialisation du launcher pour sélectionner une photo
+        // Initialize photo picker launcher for selecting images
         photoPickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 Uri imageUri = result.getData().getData();
@@ -174,6 +180,12 @@ public class EditPropertyFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Displays a DatePickerDialog allowing the user to select a date.
+     * The selected date is passed to the provided listener.
+     *
+     * @param listener The callback to receive the selected date.
+     */
     private void showDatePicker(OnDateSelectedListener listener) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -190,10 +202,19 @@ public class EditPropertyFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    /**
+     * Interface for handling date selection from the DatePickerDialog.
+     */
     interface OnDateSelectedListener {
         void onDateSelected(Date date);
     }
 
+    /**
+     * Loads the selected property from the ViewModel by its ID.
+     * Once retrieved, it populates the UI fields with the property's data.
+     *
+     * @param propertyId The ID of the property to load.
+     */
     private void loadSelectedProperty(int propertyId) {
         editPropertyViewModel.getPropertyById(propertyId).observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
@@ -205,9 +226,15 @@ public class EditPropertyFragment extends Fragment {
         });
     }
 
+    /**
+     * Populates UI fields with the details of the provided property.
+     *
+     * @param property The Property object containing details to populate.
+     */
     private void populateFields(Property property) {
         selectedProperty = property;
 
+        // Fill text fields with property data
         typeEditText.setText(property.type);
         priceEditText.setText(String.valueOf(property.price));
         surfaceEditText.setText(String.valueOf(property.surface));
@@ -216,6 +243,7 @@ public class EditPropertyFragment extends Fragment {
         bedroomsEditText.setText(String.valueOf(property.numberOfBedrooms));
         descriptionEditText.setText(property.description);
 
+        // Populate address fields if available
         if (property.address != null) {
             streetEditText.setText(property.address.street);
             cityEditText.setText(property.address.city);
@@ -226,19 +254,22 @@ public class EditPropertyFragment extends Fragment {
 
         agentEditText.setText(property.agentName);
 
+        // Update the photo list and notify the adapter
         photos.clear();
         photos.addAll(property.photos);
         photoAdapter.setPhotos(photos);
 
+        // Update the points of interest list and notify the adapter
         pointsOfInterest.clear();
         pointsOfInterest.addAll(property.pointsOfInterest);
         pointOfInterestAdapter.notifyDataSetChanged();
 
-        // Initialiser les nouvelles données
+        // Set property status (Sold/Available)
         propertyStatusSwitch.setChecked(property.isSold);
         marketDate = property.marketDate != null ? property.marketDate : new Date();
         selectedMarketDateText.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(marketDate));
 
+        // Handle sold property details
         if (property.isSold) {
             soldDate = property.soldDate;
             selectedSoldDateText.setText(soldDate != null ?
@@ -253,16 +284,27 @@ public class EditPropertyFragment extends Fragment {
         }
     }
 
+    /**
+     * Opens the photo picker dialog, allowing the user to select an image from the gallery.
+     * The selected image URI will be handled by the ActivityResultLauncher.
+     */
     private void showAddPhotoDialog() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         photoPickerLauncher.launch(intent);
     }
 
+    /**
+     * Displays an AlertDialog prompting the user to enter a description for the selected photo.
+     * The photo and its description will be added to the photos list and displayed in the adapter.
+     *
+     * @param imageUri The URI of the selected image.
+     */
     private void showPhotoDescriptionDialog(Uri imageUri) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Add Photo Description");
 
+        // Inflate the custom dialog layout
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_photo, null, false);
         EditText descriptionEditText = dialogView.findViewById(R.id.edit_text_photo_description);
 
@@ -270,6 +312,7 @@ public class EditPropertyFragment extends Fragment {
                 .setPositiveButton("Add", (dialog, which) -> {
                     String description = descriptionEditText.getText().toString().trim();
                     if (!description.isEmpty()) {
+                        // Add the photo with the description to the list and update the adapter
                         photos.add(new Photo(imageUri.toString(), description));
                         photoAdapter.setPhotos(photos);
                     } else {
@@ -280,10 +323,16 @@ public class EditPropertyFragment extends Fragment {
                 .show();
     }
 
+    /**
+     * Displays an AlertDialog allowing the user to add a new Point of Interest (POI).
+     * The user must enter both the name and type of the POI. If valid, it is added to the list
+     * and the adapter is updated.
+     */
     private void addPointOfInterest() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Add Point of Interest");
 
+        // Inflate the custom dialog layout
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_point_of_interest, null, false);
         EditText nameEditText = dialogView.findViewById(R.id.edit_text_poi_name);
         EditText typeEditText = dialogView.findViewById(R.id.edit_text_poi_type);
@@ -292,7 +341,9 @@ public class EditPropertyFragment extends Fragment {
                 .setPositiveButton("Add", (dialog, which) -> {
                     String name = nameEditText.getText().toString().trim();
                     String type = typeEditText.getText().toString().trim();
+
                     if (!name.isEmpty() && !type.isEmpty()) {
+                        // Add the POI to the list and update the adapter
                         pointsOfInterest.add(new PointOfInterest(name, type));
                         pointOfInterestAdapter.notifyDataSetChanged();
                     } else {
@@ -303,8 +354,12 @@ public class EditPropertyFragment extends Fragment {
                 .show();
     }
 
+    /**
+     * Updates the selected property with the modified details entered by the user.
+     * Ensures that all required fields are filled and verifies if updates are necessary before saving changes.
+     */
     private void updateProperty() {
-        // Vérifier les champs obligatoires
+        // Validate required fields
         String type = typeEditText.getText().toString().trim();
         String priceStr = priceEditText.getText().toString().trim();
         String surfaceStr = surfaceEditText.getText().toString().trim();
@@ -317,7 +372,7 @@ public class EditPropertyFragment extends Fragment {
             return;
         }
 
-        // Convertir les valeurs numériques avec gestion des erreurs
+        // Convert numeric values and handle errors
         double price;
         double surface;
         try {
@@ -328,7 +383,7 @@ public class EditPropertyFragment extends Fragment {
             return;
         }
 
-        // Champs optionnels avec valeurs par défaut
+        // Optional fields with default values
         int rooms = safeParseInt(roomsEditText.getText().toString().trim());
         int bathrooms = safeParseInt(bathroomsEditText.getText().toString().trim());
         int bedrooms = safeParseInt(bedroomsEditText.getText().toString().trim());
@@ -337,17 +392,17 @@ public class EditPropertyFragment extends Fragment {
         String zipCode = zipCodeEditText.getText().toString().trim();
         String country = countryEditText.getText().toString().trim();
 
-        // Vérifier si le bien est vendu et si une date de vente est fournie
+        // Verify if the property is marked as sold and ensure a sale date is provided
         boolean isSold = propertyStatusSwitch.isChecked();
         if (isSold && soldDate == null) {
             Toast.makeText(getContext(), "Please select a sold date.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // Création de l'adresse mise à jour
+        // Create the updated address
         Address newAddress = new Address(street, city, state, zipCode, country);
 
-        // Vérifier si une mise à jour est nécessaire avant modification
+        // Check if updates are necessary before modifying the property
         boolean isUpdated = false;
 
         if (!selectedProperty.type.equals(type)) {
@@ -387,13 +442,13 @@ public class EditPropertyFragment extends Fragment {
             isUpdated = true;
         }
 
-        // Mise à jour du statut du bien
+        // Update property sale status
         if (selectedProperty.isSold != isSold) {
             selectedProperty.isSold = isSold;
             isUpdated = true;
         }
 
-        // Mise à jour des dates
+        // Update market and sale dates if they have changed
         if (areDatesDifferent(selectedProperty.marketDate, marketDate)) {
             selectedProperty.marketDate = marketDate;
             isUpdated = true;
@@ -403,7 +458,7 @@ public class EditPropertyFragment extends Fragment {
             isUpdated = true;
         }
 
-        // Mise à jour explicite des listes avant sauvegarde
+        // Explicitly update the photo and POI lists before saving
         if (!selectedProperty.photos.equals(photos)) {
             selectedProperty.photos = new ArrayList<>(photos);
             isUpdated = true;
@@ -413,15 +468,16 @@ public class EditPropertyFragment extends Fragment {
             isUpdated = true;
         }
 
-        // Vérifier si des changements ont été effectués avant d'envoyer la mise à jour
+        // If any changes were made, update the property
         if (isUpdated) {
             editPropertyViewModel.updateProperty(selectedProperty);
 
-            // Envoyer un signal de mise à jour après modification
+            // Notify the parent fragment of the update
             Bundle result = new Bundle();
             result.putBoolean("property_updated", true);
             getParentFragmentManager().setFragmentResult("update_property_list", result);
 
+            // Close the fragment after updating
             requireActivity().getSupportFragmentManager().popBackStack();
         } else {
             Toast.makeText(getContext(), "No changes detected.", Toast.LENGTH_SHORT).show();
@@ -429,22 +485,31 @@ public class EditPropertyFragment extends Fragment {
     }
 
     /**
-     * Compare deux dates en tenant compte des valeurs nulles.
+     * Compares two dates while handling null values.
+     * Ensures that dates are properly checked for equality even if one or both are null.
+     *
+     * @param date1 The first date to compare.
+     * @param date2 The second date to compare.
+     * @return True if the dates are different, false if they are the same or both null.
      */
     private boolean areDatesDifferent(Date date1, Date date2) {
-        if (date1 == null && date2 == null) return false;
-        if (date1 == null || date2 == null) return true;
-        return !date1.equals(date2);
+        if (date1 == null && date2 == null) return false; // Both are null, no difference
+        if (date1 == null || date2 == null) return true;  // One is null, they are different
+        return !date1.equals(date2); // Compare actual date values
     }
 
     /**
-     * Convertit une chaîne en entier avec gestion des erreurs.
+     * Safely parses a string into an integer, returning 0 if the input is invalid.
+     * Prevents crashes due to NumberFormatException.
+     *
+     * @param text The string to be converted into an integer.
+     * @return The parsed integer value, or 0 if the conversion fails.
      */
     private int safeParseInt(String text) {
         try {
-            return text.isEmpty() ? 0 : Integer.parseInt(text);
+            return text.isEmpty() ? 0 : Integer.parseInt(text); // Return 0 if empty
         } catch (NumberFormatException e) {
-            return 0; // Retourne 0 en cas d'erreur
+            return 0; // Return 0 if the parsing fails
         }
     }
 }

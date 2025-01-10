@@ -34,9 +34,13 @@ import com.openclassrooms.realestatemanager.viewmodel.PropertyDetailViewModel;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ * Fragment for displaying the details of a selected property.
+ * This includes property description, images, location, and other relevant information.
+ */
 public class PropertyDetailFragment extends Fragment {
-    private static final String ARG_PROPERTY = "property";
-    private Property selectedProperty;
+    private static final String ARG_PROPERTY = "property"; // Key for property argument
+    private Property selectedProperty; // The selected property
 
     private PropertyDetailViewModel propertyDetailViewModel;
     private MapViewModel mapViewModel;
@@ -52,8 +56,14 @@ public class PropertyDetailFragment extends Fragment {
     private TextView marketDateTextView;
     private TextView soldDateTextView;
     private TextView agentTextView;
-    private LinearLayout soldDateSection;
+    private LinearLayout soldDateSection; // Section for displaying sold date
 
+    /**
+     * Creates a new instance of PropertyDetailFragment with the provided property.
+     *
+     * @param property The property to display details for.
+     * @return A new instance of PropertyDetailFragment.
+     */
     public static PropertyDetailFragment newInstance(Property property) {
         PropertyDetailFragment fragment = new PropertyDetailFragment();
         Bundle args = new Bundle();
@@ -67,11 +77,15 @@ public class PropertyDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Initializes the PropertyDetailFragment view, setting up UI components and data observers.
+     * This method inflates the layout, initializes RecyclerViews, ViewModels, and sets up data binding.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
 
-        // Initialisation des vues
+        // Initialize UI components
         photoRecyclerView = view.findViewById(R.id.property_photos);
         descriptionTextView = view.findViewById(R.id.property_description);
         surfaceTextView = view.findViewById(R.id.property_surface);
@@ -86,12 +100,12 @@ public class PropertyDetailFragment extends Fragment {
         soldDateSection = view.findViewById(R.id.property_sold_date_section);
         agentTextView = view.findViewById(R.id.property_agent);
 
-        // Configuration RecyclerView pour les photos
+        // Set up RecyclerView for property photos
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        PhotoAdapter photoAdapter = new PhotoAdapter(false, null);  // Pas de suppression en mode lecture seule
+        PhotoAdapter photoAdapter = new PhotoAdapter(false, null); // Read-only mode, no deletion allowed
         photoRecyclerView.setAdapter(photoAdapter);
 
-        // Initialisation des ViewModels avec ViewModelFactory
+        // Initialize ViewModels using ViewModelFactory
         propertyDetailViewModel = new ViewModelProvider(
                 this,
                 ViewModelFactory.getInstance(requireActivity().getApplication())
@@ -102,12 +116,13 @@ public class PropertyDetailFragment extends Fragment {
                 ViewModelFactory.getInstance(requireActivity().getApplication())
         ).get(MapViewModel.class);
 
+        // Retrieve property data from arguments
         if (getArguments() != null && getArguments().containsKey(ARG_PROPERTY)) {
             selectedProperty = getArguments().getParcelable(ARG_PROPERTY);
             propertyDetailViewModel.selectProperty(selectedProperty);
         }
 
-        // Observer les données du ViewModel
+        // Observe ViewModel data updates
         propertyDetailViewModel.getSelectedProperty().observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
                 selectedProperty = property;
@@ -122,28 +137,29 @@ public class PropertyDetailFragment extends Fragment {
                         : getString(R.string.not_specified));
                 photoAdapter.setPhotos(property.photos);
 
-                // Charger la carte via la méthode
+                // Load static map image for the property location
                 loadStaticMap(property.address);
 
-                // Affichage du statut du bien
+                // Display property status
                 propertyStatusTextView.setText(property.isSold ? "Sold" : "Available");
 
-                // Affichage de la date d'entrée sur le marché
+                // Display market entry date
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 marketDateTextView.setText(property.marketDate != null ? sdf.format(property.marketDate) : "Not specified");
 
-                // Affichage conditionnel de la date de vente uniquement si vendu
+                // Display sold date only if the property is sold
                 if (property.isSold && property.soldDate != null) {
-                    soldDateSection.setVisibility(View.VISIBLE);  // Afficher toute la section
-                    soldDateTextView.setVisibility(View.VISIBLE);  // Afficher la date
+                    soldDateSection.setVisibility(View.VISIBLE); // Show the sold date section
+                    soldDateTextView.setVisibility(View.VISIBLE); // Show the actual date
                     soldDateTextView.setText(sdf.format(property.soldDate));
                 } else {
-                    soldDateSection.setVisibility(View.GONE);  // Cacher toute la section
-                    soldDateTextView.setVisibility(View.GONE);  // Cacher la date aussi
+                    soldDateSection.setVisibility(View.GONE); // Hide the entire section
+                    soldDateTextView.setVisibility(View.GONE); // Hide the sold date
                 }
             }
         });
 
+        // Handle click event on the map to display nearby points of interest
         mapImageView.setOnClickListener(v -> {
             if (selectedProperty != null && selectedProperty.pointsOfInterest != null && !selectedProperty.pointsOfInterest.isEmpty()) {
                 PointOfInterestDialogFragment dialog = PointOfInterestDialogFragment.newInstance(selectedProperty.pointsOfInterest);
@@ -153,9 +169,9 @@ public class PropertyDetailFragment extends Fragment {
             }
         });
 
-        setupMenu(); // Ajout du menu dynamique
+        setupMenu(); // Set up the dynamic menu
 
-        // Écoute des mises à jour après modification d'une propriété
+        // Listen for property updates after modifications
         getParentFragmentManager().setFragmentResultListener("update_property_list", this, (requestKey, bundle) -> {
             boolean updated = bundle.getBoolean("property_updated", false);
             if (updated && selectedProperty != null) {
@@ -166,6 +182,12 @@ public class PropertyDetailFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Reloads the details of a property by fetching the latest data from the ViewModel.
+     * This ensures that the displayed property information is up-to-date.
+     *
+     * @param propertyId The ID of the property to reload.
+     */
     private void reloadPropertyDetails(int propertyId) {
         propertyDetailViewModel.getPropertyById(propertyId).observe(getViewLifecycleOwner(), property -> {
             if (property != null) {
@@ -174,6 +196,12 @@ public class PropertyDetailFragment extends Fragment {
         });
     }
 
+    /**
+     * Populates the UI fields with the details of the selected property.
+     * This method updates text fields, images, and other UI elements to reflect the property data.
+     *
+     * @param property The property whose details will be displayed.
+     */
     private void populateFields(Property property) {
         selectedProperty = property;
 
@@ -184,20 +212,24 @@ public class PropertyDetailFragment extends Fragment {
         bedroomsTextView.setText(String.valueOf(property.numberOfBedrooms));
         locationTextView.setText(formatPropertyLocation(property.address));
 
-        // Met à jour les photos
+        // Update photos in the RecyclerView
         if (photoRecyclerView.getAdapter() instanceof PhotoAdapter) {
             ((PhotoAdapter) photoRecyclerView.getAdapter()).setPhotos(property.photos);
         }
 
-        // Recharge la carte
+        // Reload the map with the property’s location
         loadStaticMap(property.address);
     }
 
+    /**
+     * Sets up the options menu for the fragment, allowing the user to access the edit functionality.
+     * This menu is dynamically added to the activity when the fragment is displayed.
+     */
     private void setupMenu() {
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.detail_menu, menu); // Charge le menu spécifique au fragment
+                menuInflater.inflate(R.menu.detail_menu, menu); // Load the property detail menu
             }
 
             @Override
@@ -211,6 +243,10 @@ public class PropertyDetailFragment extends Fragment {
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
+    /**
+     * Opens the EditPropertyFragment to allow the user to modify the selected property.
+     * The selected property's ID is passed as an argument to the edit fragment.
+     */
     private void openEditProperty() {
         if (selectedProperty != null) {
             Bundle bundle = new Bundle();
@@ -228,6 +264,12 @@ public class PropertyDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Formats the address of a property into a multi-line string for display.
+     *
+     * @param address The address object containing street, city, state, zip code, and country.
+     * @return A formatted string representing the property location.
+     */
     private String formatPropertyLocation(Address address) {
         return address.street + "\n"
                 + address.city + "\n"
@@ -235,26 +277,35 @@ public class PropertyDetailFragment extends Fragment {
                 + address.country;
     }
 
+    /**
+     * Loads a static map image based on the property's address.
+     * Uses Yandex Static Maps API to display the location of the property.
+     *
+     * @param address The address of the property.
+     */
     private void loadStaticMap(Address address) {
+        // Check if address information is valid
         if (address == null || address.street == null || address.city == null || address.state == null) {
             Log.e("PropertyDetailFragment", "Address is null or incomplete");
             mapImageView.setImageResource(R.drawable.ic_placeholder_map);
             return;
         }
 
-        // Vérification de la connexion Internet
+        // Check for internet connection before making API requests
         if (!Utils.isInternetAvailable(requireContext())) {
             Log.e("PropertyDetailFragment", "No internet connection");
             mapImageView.setImageResource(R.drawable.ic_offline_map);
             return;
         }
 
+        // Construct full address string for geocoding
         String fullAddress = address.street + ", " + address.city + ", " + address.state;
-
         Log.d("PropertyDetailFragment", "Fetching coordinates for address: " + fullAddress);
 
+        // Request coordinates from ViewModel
         mapViewModel.fetchCoordinates(fullAddress);
 
+        // Observe LiveData for successful coordinate retrieval
         mapViewModel.getMapDataLiveData().observe(getViewLifecycleOwner(), response -> {
             if (response != null) {
                 double lat = response.lat;
@@ -262,14 +313,14 @@ public class PropertyDetailFragment extends Fragment {
 
                 Log.d("PropertyDetailFragment", "Coordinates found: lat=" + lat + ", lon=" + lon);
 
-                // Construire l'URL de la carte avec style détaillé et marqueur rouge
+                // Construct the Yandex Static Map URL with zoom level and red marker
                 String mapUrl = "https://static-maps.yandex.ru/1.x/?lang=en_US&ll="
                         + lon + "," + lat
                         + "&z=17&l=map&pt=" + lon + "," + lat + ",pm2rdm";
 
                 Log.d("PropertyDetailFragment", "Generated map URL: " + mapUrl);
 
-                // Charger la carte via Glide
+                // Load map image using Glide with placeholders for loading and error handling
                 Glide.with(this)
                         .load(mapUrl)
                         .placeholder(R.drawable.ic_placeholder_map)
@@ -281,6 +332,7 @@ public class PropertyDetailFragment extends Fragment {
             }
         });
 
+        // Observe LiveData for errors during geocoding requests
         mapViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
                 Log.e("PropertyDetailFragment", "Error fetching coordinates: " + error);

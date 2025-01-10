@@ -18,17 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.di.ViewModelFactory;
-import com.openclassrooms.realestatemanager.model.entity.Address;
-import com.openclassrooms.realestatemanager.model.entity.Photo;
-import com.openclassrooms.realestatemanager.model.entity.PointOfInterest;
 import com.openclassrooms.realestatemanager.model.entity.Property;
 import com.openclassrooms.realestatemanager.view.adapter.PropertyAdapter;
 import com.openclassrooms.realestatemanager.viewmodel.PropertyListViewModel;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+/**
+ * Fragment responsible for displaying a list of properties.
+ * Supports both tablet and phone layouts and provides search functionality.
+ */
 public class PropertyListFragment extends Fragment {
     private PropertyListViewModel propertyListViewModel;
     private RecyclerView recyclerView;
@@ -38,13 +35,11 @@ public class PropertyListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
 
-        // Configuration du RecyclerView
+        // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext())); // Mandatory LayoutManager setup
 
-        // Initialisation du LayoutManager (obligatoire)
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        // Initialisation de l'adapteur
+        // Initialize adapter with click listener
         adapter = new PropertyAdapter(property -> {
             if (isTablet()) {
                 showPropertyDetailInTablet(property);
@@ -53,23 +48,22 @@ public class PropertyListFragment extends Fragment {
             }
         });
 
-        // Lier l'adapteur au RecyclerView
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter); // Attach adapter to RecyclerView
 
-        // Initialisation du ViewModel avec ViewModelFactory
+        // Initialize ViewModel using ViewModelFactory
         propertyListViewModel = new ViewModelProvider(
                 this,
                 ViewModelFactory.getInstance(requireActivity().getApplication())
         ).get(PropertyListViewModel.class);
 
-        // Observer les données filtrées
+        // Observe filtered property list from ViewModel
         propertyListViewModel.getFilteredProperties().observe(getViewLifecycleOwner(), properties -> {
             if (properties != null) {
                 adapter.setProperties(properties);
             }
         });
 
-        // Écoute des mises à jour après ajout ou modification d'une propriété
+        // Listen for property updates after adding or modifying a property
         getParentFragmentManager().setFragmentResultListener("update_property_list", this, (requestKey, bundle) -> {
             boolean updated = bundle.getBoolean("property_updated", false);
             if (updated) {
@@ -77,26 +71,26 @@ public class PropertyListFragment extends Fragment {
             }
         });
 
-        setupMenu(); // 🔹 Ajout du menu de recherche avec MenuProvider
+        setupMenu(); // Adds the search menu using MenuProvider
         return view;
     }
 
     /**
-     * Configure le menu de recherche en utilisant MenuProvider.
+     * Sets up the search menu using MenuProvider.
      */
     private void setupMenu() {
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.list_menu, menu); // Charge le menu de recherche
+                menuInflater.inflate(R.menu.list_menu, menu); // Load search menu
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_search) {
-                    openSearchDialog(); // Ouvre la boîte de dialogue de recherche
+                    openSearchDialog(); // Open the search dialog
                     return true;
-                } else if (menuItem.getItemId() == R.id.action_reset_search) { // Réinitialise la recherche
+                } else if (menuItem.getItemId() == R.id.action_reset_search) { // Reset search filters
                     propertyListViewModel.resetSearch();
                     return true;
                 }
@@ -106,18 +100,18 @@ public class PropertyListFragment extends Fragment {
     }
 
     /**
-     * Affiche la boîte de dialogue de recherche avancée.
+     * Displays the advanced search dialog.
      */
     private void openSearchDialog() {
         SearchDialogFragment searchDialog = new SearchDialogFragment();
         searchDialog.setOnSearchListener(criteria -> {
-            propertyListViewModel.searchProperties(criteria); // Applique le filtre
+            propertyListViewModel.searchProperties(criteria); // Apply search filters
         });
         searchDialog.show(getParentFragmentManager(), "SearchDialog");
     }
 
     /**
-     * Rafraîchit la liste des propriétés après une mise à jour.
+     * Refreshes the property list after an update.
      */
     private void refreshPropertyList() {
         propertyListViewModel.getFilteredProperties().observe(getViewLifecycleOwner(), properties -> {
@@ -128,30 +122,36 @@ public class PropertyListFragment extends Fragment {
     }
 
     /**
-     * Vérifie si l'application est exécutée sur une tablette.
+     * Checks if the application is running on a tablet.
+     *
+     * @return True if running on a tablet, false otherwise.
      */
     private boolean isTablet() {
-        return getResources().getBoolean(R.bool.is_tablet); // Définir "is_tablet" dans res/values/bools.xml
+        return getResources().getBoolean(R.bool.is_tablet); // Defined in res/values/bools.xml
     }
 
     /**
-     * Ouvre le détail d'une propriété pour les téléphones.
+     * Opens the property detail view for phones.
+     *
+     * @param property The selected property.
      */
     private void navigateToPropertyDetail(Property property) {
         PropertyDetailFragment detailFragment = PropertyDetailFragment.newInstance(property);
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, detailFragment) // Utilisez fragment_container pour les téléphones
+                .replace(R.id.fragment_container, detailFragment) // Use fragment_container for phones
                 .addToBackStack(null)
                 .commit();
     }
 
     /**
-     * Ouvre le détail d'une propriété pour les tablettes.
+     * Opens the property detail view for tablets.
+     *
+     * @param property The selected property.
      */
     private void showPropertyDetailInTablet(Property property) {
         PropertyDetailFragment detailFragment = PropertyDetailFragment.newInstance(property);
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.property_detail_container, detailFragment) // Utilisez property_detail_container pour les tablettes
+                .replace(R.id.property_detail_container, detailFragment) // Use property_detail_container for tablets
                 .commit();
     }
 }

@@ -15,4 +15,5 @@
     <string name="close">Close</string>
     <string name="agent">Agent</string>
     <string name="not_specified">Not specified</string>
+    <string name="not_selected">Not selected</string>
 </resources>

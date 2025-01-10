@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Entity class representing a real estate property.
  * Implements Parcelable to allow passing property objects between components.
+ * This class is used as a Room entity to store property data in the database.
  */
 @Entity(tableName = "property")
 public class Property implements Parcelable {
@@ -48,12 +49,29 @@ public class Property implements Parcelable {
     public Date soldDate; // Date when the property was sold (if applicable)
     public String agentName; // Name of the real estate agent responsible for the property
 
-    // Default constructor required by Room
+    /**
+     * Default constructor required by Room.
+     */
     public Property() {
     }
 
     /**
-     * Constructor with all fields.
+     * Constructor initializing all fields.
+     *
+     * @param type              The property type (e.g., house, apartment).
+     * @param price             The price of the property.
+     * @param surface           The surface area in square meters.
+     * @param numberOfRooms     The number of rooms.
+     * @param numberOfBathrooms The number of bathrooms.
+     * @param numberOfBedrooms  The number of bedrooms.
+     * @param description       A brief description of the property.
+     * @param address           The address of the property.
+     * @param photos            List of photos associated with the property.
+     * @param pointsOfInterest  List of points of interest near the property.
+     * @param isSold            Indicates if the property has been sold.
+     * @param marketDate        The date when the property was listed on the market.
+     * @param soldDate          The date when the property was sold (if applicable).
+     * @param agentName         The name of the real estate agent handling the property.
      */
     public Property(String type, double price, double surface, int numberOfRooms, int numberOfBathrooms, int numberOfBedrooms,
                     String description, Address address, List<Photo> photos, List<PointOfInterest> pointsOfInterest,
@@ -76,6 +94,10 @@ public class Property implements Parcelable {
 
     /**
      * Simplified constructor for quick property creation with essential details.
+     *
+     * @param type      The property type (e.g., house, apartment).
+     * @param agentName The name of the real estate agent handling the property.
+     * @param price     The price of the property.
      */
     public Property(String type, String agentName, double price) {
         this.type = type;
@@ -99,6 +121,9 @@ public class Property implements Parcelable {
 
     /**
      * Constructor used for Parcel.
+     * Allows recreating a Property object from a Parcel.
+     *
+     * @param in Parcel containing serialized Property data.
      */
     protected Property(Parcel in) {
         id = in.readInt();
@@ -118,6 +143,10 @@ public class Property implements Parcelable {
         agentName = in.readString();
     }
 
+    /**
+     * Parcelable Creator for Property.
+     * Allows passing Property objects between Android components.
+     */
     public static final Creator<Property> CREATOR = new Creator<Property>() {
         @Override
         public Property createFromParcel(Parcel in) {
@@ -130,6 +159,12 @@ public class Property implements Parcelable {
         }
     };
 
+    /**
+     * Describes the contents of the Parcelable object.
+     * Typically returns 0.
+     *
+     * @return Always returns 0.
+     */
     @Override
     public int describeContents() {
         return 0;
@@ -137,6 +172,9 @@ public class Property implements Parcelable {
 
     /**
      * Writes the object's data to a Parcel.
+     *
+     * @param dest  The Parcel object to write data into.
+     * @param flags Additional flags (unused in this case).
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -159,6 +197,9 @@ public class Property implements Parcelable {
 
     /**
      * Converts ContentValues to a Property object, useful for ContentProviders.
+     *
+     * @param values The ContentValues containing property data.
+     * @return A new Property object initialized from the ContentValues.
      */
     public static Property fromContentValues(ContentValues values) {
         Property property = new Property();

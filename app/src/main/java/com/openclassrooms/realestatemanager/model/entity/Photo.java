@@ -8,26 +8,45 @@ import android.os.Parcelable;
  * Implements Parcelable to allow passing photo objects between components.
  */
 public class Photo implements Parcelable {
-    public String uri; // URI of the photo
-    public String description; // Description of the photo
 
-    // Default constructor required by Room
+    /** URI of the photo (file path or online link). */
+    public String uri;
+
+    /** Description or caption for the photo. */
+    public String description;
+
+    /**
+     * Default constructor required by Room.
+     * Used for database operations.
+     */
     public Photo() {
     }
 
-    // Constructor with all fields
+    /**
+     * Constructor initializing all fields.
+     *
+     * @param uri         The URI of the photo.
+     * @param description The description of the photo.
+     */
     public Photo(String uri, String description) {
         this.uri = uri;
         this.description = description;
     }
 
-    // Constructor to read data from a Parcel
+    /**
+     * Constructor to recreate a Photo object from a Parcel.
+     *
+     * @param in Parcel containing serialized Photo data.
+     */
     protected Photo(Parcel in) {
         uri = in.readString();
         description = in.readString();
     }
 
-    // Parcelable Creator to recreate Photo objects from a Parcel
+    /**
+     * Parcelable Creator for Photo.
+     * Allows passing Photo objects between Android components.
+     */
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         @Override
         public Photo createFromParcel(Parcel in) {
@@ -40,12 +59,23 @@ public class Photo implements Parcelable {
         }
     };
 
+    /**
+     * Describes the contents of the Parcelable object.
+     * Generally returns 0 as a default value.
+     *
+     * @return Always returns 0.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
-    // Method to write the object's data to a Parcel
+    /**
+     * Writes the Photo object data into a Parcel for storage or transmission.
+     *
+     * @param dest  The Parcel object to write data into.
+     * @param flags Additional flags (unused in this case).
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uri);

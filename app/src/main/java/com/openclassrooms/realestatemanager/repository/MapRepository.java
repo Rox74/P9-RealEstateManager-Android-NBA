@@ -17,6 +17,7 @@ public class MapRepository {
 
     /**
      * Constructor that initializes the Nominatim API instance.
+     * This API is used to perform geocoding requests.
      */
     public MapRepository() {
         api = new NominatimApi();
@@ -24,9 +25,10 @@ public class MapRepository {
 
     /**
      * Fetches geographical coordinates (latitude and longitude) for a given address.
+     * This method sends a request to the Nominatim API and retrieves an array of possible results.
      *
      * @param address The address to be geocoded.
-     * @return A Retrofit Call object containing an array of NominatimResponse.
+     * @return A Retrofit Call object containing an array of NominatimResponse objects.
      */
     public Call<NominatimResponse[]> fetchCoordinatesForAddress(String address) {
         return api.getCoordinatesForAddress(address);

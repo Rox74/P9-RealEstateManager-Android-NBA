@@ -20,12 +20,13 @@ import com.openclassrooms.realestatemanager.viewmodel.PropertyListViewModel;
  * It ensures that all ViewModels are created with their necessary dependencies.
  */
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
     private static volatile ViewModelFactory INSTANCE; // Singleton instance
     private final PropertyRepository propertyRepository;
     private final MapRepository mapRepository;
 
     /**
-     * Private constructor to enforce singleton pattern.
+     * Private constructor to enforce the singleton pattern.
      * Initializes repositories required by ViewModels.
      *
      * @param application The Application instance used to initialize repositories.

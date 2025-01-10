@@ -10,6 +10,7 @@ public class AppInjector {
 
     /**
      * Initializes the dependency injection system.
+     * This method should be called once at the application startup.
      *
      * @param application The Application instance used to initialize ViewModelFactory.
      */

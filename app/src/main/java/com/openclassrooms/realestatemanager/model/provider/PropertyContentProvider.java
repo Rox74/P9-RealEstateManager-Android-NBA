@@ -51,6 +51,13 @@ public class PropertyContentProvider extends ContentProvider {
 
     /**
      * Queries the database for properties based on the provided URI.
+     *
+     * @param uri           The URI to query.
+     * @param projection    The columns to return.
+     * @param selection     The selection criteria.
+     * @param selectionArgs The selection arguments.
+     * @param sortOrder     The sort order for the results.
+     * @return A Cursor object containing the query results.
      */
     @Nullable
     @Override
@@ -84,6 +91,10 @@ public class PropertyContentProvider extends ContentProvider {
 
     /**
      * Inserts a new property into the database.
+     *
+     * @param uri    The URI where the property should be inserted.
+     * @param values The property data to insert.
+     * @return The URI of the newly inserted property.
      */
     @Nullable
     @Override
@@ -109,6 +120,11 @@ public class PropertyContentProvider extends ContentProvider {
 
     /**
      * Deletes a property from the database using its ID.
+     *
+     * @param uri           The URI identifying the property to delete.
+     * @param selection     Unused (since deletion is based on ID).
+     * @param selectionArgs Unused (since deletion is based on ID).
+     * @return The number of rows affected.
      */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
@@ -129,6 +145,12 @@ public class PropertyContentProvider extends ContentProvider {
 
     /**
      * Updates an existing property in the database.
+     *
+     * @param uri           The URI identifying the property to update.
+     * @param values        The new values to update the property with.
+     * @param selection     Unused (since update is based on ID).
+     * @param selectionArgs Unused (since update is based on ID).
+     * @return The number of rows affected.
      */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
@@ -152,6 +174,9 @@ public class PropertyContentProvider extends ContentProvider {
 
     /**
      * Returns the MIME type of data provided by this ContentProvider.
+     *
+     * @param uri The URI to check.
+     * @return The MIME type as a string.
      */
     @Nullable
     @Override

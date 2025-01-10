@@ -86,9 +86,25 @@ public interface PropertyDao {
     @Query("DELETE FROM property WHERE id = :id")
     int deleteById(long id);
 
+    /**
+     * Deletes all properties from the database.
+     * This is useful for resetting the dataset in tests or for debugging.
+     */
     @Query("DELETE FROM property")
     void deleteAllProperties();
 
+    /**
+     * Searches properties based on multiple filtering criteria.
+     * If a criterion is set to 0 or NULL, it will not be considered in the filtering process.
+     *
+     * @param minPrice   The minimum price filter.
+     * @param maxPrice   The maximum price filter.
+     * @param minSurface The minimum surface area filter.
+     * @param maxSurface The maximum surface area filter.
+     * @param minRooms   The minimum number of rooms filter.
+     * @param location   The location filter (searches by city or state).
+     * @return A LiveData list of properties that match the criteria.
+     */
     @Query("SELECT * FROM property WHERE " +
             "(:minPrice = 0 OR price >= :minPrice) AND " +
             "(:maxPrice = 0 OR price <= :maxPrice) AND " +

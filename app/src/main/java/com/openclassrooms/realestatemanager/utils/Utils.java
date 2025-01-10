@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Utility class providing various helper methods for real estate application.
+ * Utility class providing various helper methods for the real estate application.
  * Created by Philippe on 21/02/2018.
  */
 public class Utils {
@@ -41,7 +41,7 @@ public class Utils {
     }
 
     /**
-     * Gets today's date formatted in "dd/MM/yyyy".
+     * Gets today's date formatted as "dd/MM/yyyy".
      * NOTE: UPDATED METHOD, MUST BE PRESENTED DURING THE FINAL REVIEW.
      *
      * @return The formatted date as a String.

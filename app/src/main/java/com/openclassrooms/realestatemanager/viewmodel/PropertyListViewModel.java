@@ -11,52 +11,79 @@ import com.openclassrooms.realestatemanager.repository.PropertyRepository;
 
 import java.util.List;
 
+/**
+ * ViewModel responsible for managing the list of properties.
+ * It provides LiveData for all properties and filtered properties based on search criteria.
+ */
 public class PropertyListViewModel extends ViewModel {
-    private final PropertyRepository repository;
-    private final LiveData<List<Property>> allProperties; // Toutes les propriétés
-    private final MutableLiveData<SearchCriteria> searchCriteria = new MutableLiveData<>(); // Critères de recherche
-    private final LiveData<List<Property>> filteredProperties; // Propriétés filtrées
 
+    // Repository handling property-related data operations
+    private final PropertyRepository repository;
+
+    // LiveData containing the full list of properties
+    private final LiveData<List<Property>> allProperties;
+
+    // MutableLiveData holding the search criteria set by the user
+    private final MutableLiveData<SearchCriteria> searchCriteria = new MutableLiveData<>();
+
+    // LiveData containing the filtered list of properties based on the search criteria
+    private final LiveData<List<Property>> filteredProperties;
+
+    /**
+     * Constructor that initializes the ViewModel with a PropertyRepository instance.
+     * It observes search criteria and dynamically updates the filtered properties list.
+     *
+     * @param repository The repository handling property data operations.
+     */
     public PropertyListViewModel(PropertyRepository repository) {
         this.repository = repository;
         this.allProperties = repository.getAllProperties();
 
-        // Met à jour les propriétés filtrées en fonction des critères de recherche
+        // Updates the filtered properties list whenever search criteria change
         this.filteredProperties = Transformations.switchMap(searchCriteria, criteria -> {
             if (criteria == null) {
-                return allProperties; // Si aucun critère, retourne toutes les propriétés
+                return allProperties; // If no criteria, return all properties
             } else {
-                return repository.searchProperties(criteria); // Retourne les propriétés correspondant aux critères
+                return repository.searchProperties(criteria); // Return filtered properties
             }
         });
 
-        // Initialiser les critères à null (pas de filtre)
+        // Initialize search criteria to null (no filter applied)
         searchCriteria.setValue(null);
     }
 
     /**
-     * Retourne toutes les propriétés disponibles.
+     * Returns LiveData containing the full list of properties.
+     * UI components can observe this LiveData to receive automatic updates.
+     *
+     * @return LiveData containing all properties.
      */
     public LiveData<List<Property>> getAllProperties() {
         return allProperties;
     }
 
     /**
-     * Retourne les propriétés filtrées en fonction des critères.
+     * Returns LiveData containing the filtered list of properties based on search criteria.
+     * UI components can observe this LiveData for automatic updates.
+     *
+     * @return LiveData containing the filtered properties.
      */
     public LiveData<List<Property>> getFilteredProperties() {
         return filteredProperties;
     }
 
     /**
-     * Applique les critères de recherche.
+     * Applies the given search criteria and updates the filtered properties list.
+     * This triggers an update in the observed LiveData.
+     *
+     * @param criteria The search criteria to apply.
      */
     public void searchProperties(SearchCriteria criteria) {
         searchCriteria.setValue(criteria);
     }
 
     /**
-     * Réinitialise les critères de recherche pour afficher toutes les propriétés.
+     * Resets the search criteria, causing the filtered properties list to display all properties again.
      */
     public void resetSearch() {
         searchCriteria.setValue(null);

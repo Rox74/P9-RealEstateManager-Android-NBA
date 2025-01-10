@@ -25,7 +25,7 @@ public class MockDataProvider {
 
         // ---------- Property 1: Luxury Condo in Manhattan ----------
 
-        // Creating address for the first property
+        // Creating an address for the first property
         Address address1 = new Address(
                 "127 W 57th St",
                 "Manhattan",
@@ -41,7 +41,7 @@ public class MockDataProvider {
         photos1.add(new Photo("android.resource://com.openclassrooms.realestatemanager/drawable/home1_photo3", "Office Room"));
         photos1.add(new Photo("android.resource://com.openclassrooms.realestatemanager/drawable/home1_photo4", "Dining Room"));
 
-        // Creating a list of points of interest near the property
+        // Creating a list of points of interest near the first property
         List<PointOfInterest> pointsOfInterest1 = new ArrayList<>();
         pointsOfInterest1.add(new PointOfInterest("Central Park", "Park"));
         pointsOfInterest1.add(new PointOfInterest("Broadway Theater", "Entertainment"));
@@ -66,7 +66,7 @@ public class MockDataProvider {
 
         // ---------- Property 2: Beachfront House in Montauk ----------
 
-        // Creating address for the second property
+        // Creating an address for the second property
         Address address2 = new Address(
                 "408 Old Montauk Hwy",
                 "Montauk",

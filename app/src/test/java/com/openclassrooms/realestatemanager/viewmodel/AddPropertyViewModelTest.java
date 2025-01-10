@@ -26,6 +26,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Unit tests for the AddPropertyViewModel class.
+ * This class tests the behavior of inserting properties into the repository.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class AddPropertyViewModelTest {
 
@@ -37,54 +41,66 @@ public class AddPropertyViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the mocked PropertyRepository and the ViewModel instance.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         viewModel = new AddPropertyViewModel(propertyRepository);
     }
 
+    /**
+     * Tests the successful insertion of a property.
+     * Ensures that the repository correctly processes the property insertion.
+     */
     @Test
     public void insertProperty_success() throws InterruptedException {
-        // GIVEN - Une propriété valide
+        // GIVEN - A valid property object
         Property property = new Property("Apartment", 250000, 120, 3, 1, 2,
                 "Spacious apartment in NYC",
                 new Address("5th Avenue", "New York", "NY", "10001", "USA"),
                 new ArrayList<>(), new ArrayList<>(), false, new Date(), null, "John Doe");
 
-        // Simulation du comportement de propertyRepository.insert()
+        // Simulate the repository's behavior when inserting a property
         MutableLiveData<Boolean> expectedResult = new MutableLiveData<>();
         expectedResult.setValue(true);
         when(propertyRepository.insert(property)).thenReturn(expectedResult);
 
-        // WHEN - Appel à insertProperty()
+        // WHEN - Calling insertProperty()
         LiveData<Boolean> resultLiveData = viewModel.insertProperty(property);
         Boolean result = LiveDataTestUtil.getValue(resultLiveData);
 
-        // THEN - Vérification que l'insertion a bien été effectuée
+        // THEN - Verify that the insertion was successful
         assertNotNull(result);
         assertTrue(result);
-        verify(propertyRepository).insert(property); // Vérifie que la méthode a bien été appelée
+        verify(propertyRepository).insert(property); // Ensure the method was called on the repository
     }
 
+    /**
+     * Tests the failure scenario of inserting a property.
+     * Ensures that the repository handles invalid property insertions properly.
+     */
     @Test
     public void insertProperty_failure() throws InterruptedException {
-        // GIVEN - Une propriété invalide (juste pour simuler un échec)
+        // GIVEN - An invalid property (empty fields to simulate a failure)
         Property property = new Property("", 0, 0, 0, 0, 0,
                 "", new Address("", "", "", "", ""),
                 new ArrayList<>(), new ArrayList<>(), false, new Date(), null, "");
 
-        // Simulation d'un échec d'insertion
+        // Simulate a failed insertion scenario
         MutableLiveData<Boolean> expectedResult = new MutableLiveData<>();
         expectedResult.setValue(false);
         when(propertyRepository.insert(property)).thenReturn(expectedResult);
 
-        // WHEN - Appel à insertProperty()
+        // WHEN - Calling insertProperty()
         LiveData<Boolean> resultLiveData = viewModel.insertProperty(property);
         Boolean result = LiveDataTestUtil.getValue(resultLiveData);
 
-        // THEN - Vérification que l'insertion a échoué
+        // THEN - Verify that the insertion failed
         assertNotNull(result);
         assertFalse(result);
-        verify(propertyRepository).insert(property);
+        verify(propertyRepository).insert(property); // Ensure the method was called on the repository
     }
 }

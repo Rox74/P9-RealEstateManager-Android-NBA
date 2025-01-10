@@ -25,6 +25,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Unit tests for the PropertyDetailViewModel class.
+ * This class verifies the selection and retrieval of property details.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyDetailViewModelTest {
 
@@ -36,6 +40,10 @@ public class PropertyDetailViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the mocked PropertyRepository and the ViewModel instance.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -43,32 +51,32 @@ public class PropertyDetailViewModelTest {
     }
 
     /**
-     * Test `selectProperty()` - Vérifie que la propriété sélectionnée est bien stockée.
+     * Tests `selectProperty()` - Ensures that the selected property is properly stored.
      */
     @Test
     public void selectProperty_setsSelectedProperty() throws InterruptedException {
-        // GIVEN - Une propriété fictive
+        // GIVEN - A sample property
         Property property = new Property("House", 450000, 180, 5, 2, 3,
                 "Beautiful house with garden",
                 new Address("10th Street", "Los Angeles", "CA", "90001", "USA"),
                 new ArrayList<>(), new ArrayList<>(), false, new Date(), null, "Alice Smith");
 
-        // WHEN - Sélection de la propriété
+        // WHEN - Selecting the property
         viewModel.selectProperty(property);
         Property selected = LiveDataTestUtil.getValue(viewModel.getSelectedProperty());
 
-        // THEN - Vérifie que la bonne propriété est stockée
+        // THEN - Verify that the correct property is stored
         assertNotNull(selected);
         assertEquals("House", selected.type);
         assertEquals(450000, selected.price, 0.01);
     }
 
     /**
-     * Test `getPropertyById()` - Vérifie que la bonne propriété est récupérée par son ID.
+     * Tests `getPropertyById()` - Ensures that the correct property is retrieved by its ID.
      */
     @Test
     public void getPropertyById_returnsProperty() throws InterruptedException {
-        // GIVEN - Une propriété fictive
+        // GIVEN - A sample property
         Property property = new Property("Apartment", 300000, 100, 4, 1, 2,
                 "Nice apartment in downtown",
                 new Address("5th Avenue", "New York", "NY", "10001", "USA"),
@@ -77,14 +85,14 @@ public class PropertyDetailViewModelTest {
         MutableLiveData<Property> expectedLiveData = new MutableLiveData<>();
         expectedLiveData.setValue(property);
 
-        // Simulation du comportement du repository
+        // Simulating repository behavior
         when(propertyRepository.getPropertyById(1)).thenReturn(expectedLiveData);
 
-        // WHEN - Récupération de la propriété
+        // WHEN - Retrieving the property by ID
         LiveData<Property> resultLiveData = viewModel.getPropertyById(1);
         Property result = LiveDataTestUtil.getValue(resultLiveData);
 
-        // THEN - Vérifie que la bonne propriété est retournée
+        // THEN - Verify that the correct property is returned
         assertNotNull(result);
         assertEquals("Apartment", result.type);
         assertEquals("New York", result.address.city);

@@ -27,6 +27,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Unit tests for the MapViewModel class.
+ * This class tests fetching coordinates based on an address using the MapRepository.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class MapViewModelTest {
 
@@ -41,6 +45,10 @@ public class MapViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the mocked MapRepository and the ViewModel instance.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -48,14 +56,15 @@ public class MapViewModelTest {
     }
 
     /**
-     * Test fetchCoordinates() - Succès avec une réponse valide.
+     * Tests fetchCoordinates() - Success case with a valid API response.
+     * Ensures that valid coordinates are retrieved and stored in LiveData.
      */
     @Test
     public void fetchCoordinates_success() throws InterruptedException {
-        // GIVEN - Une adresse valide et un mock de réponse API
+        // GIVEN - A valid address and a mocked API response
         String address = "1600 Amphitheatre Parkway, Mountain View, CA";
 
-        // Création d'un mock de NominatimResponse avec des coordonnées correctes
+        // Mock a NominatimResponse with valid latitude and longitude
         NominatimResponse mockResponse = new NominatimResponse();
         mockResponse.lat = 37.422;
         mockResponse.lon = -122.084;
@@ -65,17 +74,18 @@ public class MapViewModelTest {
 
         when(mapRepository.fetchCoordinatesForAddress(address)).thenReturn(mockCall);
 
+        // Simulate a successful API response
         doAnswer(invocation -> {
             Callback<NominatimResponse[]> callback = invocation.getArgument(0);
             callback.onResponse(mockCall, successResponse);
             return null;
         }).when(mockCall).enqueue(any());
 
-        // WHEN - Appel à fetchCoordinates()
+        // WHEN - Calling fetchCoordinates()
         viewModel.fetchCoordinates(address);
         NominatimResponse result = LiveDataTestUtil.getValue(viewModel.getMapDataLiveData());
 
-        // THEN - Vérification que les bonnes coordonnées sont retournées
+        // THEN - Verify that the correct coordinates are retrieved
         assertNotNull(result);
         assertEquals(37.422, result.lat, 0.0001);
         assertEquals(-122.084, result.lon, 0.0001);
@@ -83,54 +93,58 @@ public class MapViewModelTest {
     }
 
     /**
-     * Test fetchCoordinates() - Réponse vide.
+     * Tests fetchCoordinates() - No data found in the response.
+     * Ensures that an appropriate error message is set when no results are returned.
      */
     @Test
     public void fetchCoordinates_noDataFound() throws InterruptedException {
-        // GIVEN - Une réponse vide
+        // GIVEN - A response with no data
         String address = "Invalid Address";
         Response<NominatimResponse[]> emptyResponse = Response.success(new NominatimResponse[0]);
 
         when(mapRepository.fetchCoordinatesForAddress(address)).thenReturn(mockCall);
 
+        // Simulate an API response returning no results
         doAnswer(invocation -> {
             Callback<NominatimResponse[]> callback = invocation.getArgument(0);
             callback.onResponse(mockCall, emptyResponse);
             return null;
         }).when(mockCall).enqueue(any());
 
-        // WHEN - Appel à fetchCoordinates()
+        // WHEN - Calling fetchCoordinates()
         viewModel.fetchCoordinates(address);
         String errorMessage = LiveDataTestUtil.getValue(viewModel.getErrorLiveData());
 
-        // THEN - Vérifie que l'erreur est bien déclenchée
+        // THEN - Verify that the correct error message is set
         assertNotNull(errorMessage);
         assertEquals("No data found for the given address", errorMessage);
         verify(mapRepository).fetchCoordinatesForAddress(address);
     }
 
     /**
-     * Test fetchCoordinates() - Erreur réseau.
+     * Tests fetchCoordinates() - Network error scenario.
+     * Ensures that an appropriate error message is set when a network failure occurs.
      */
     @Test
     public void fetchCoordinates_networkError() throws InterruptedException {
-        // GIVEN - Simuler une erreur réseau
+        // GIVEN - Simulate a network failure
         String address = "Some Address";
         String errorMsg = "Network failure";
 
         when(mapRepository.fetchCoordinatesForAddress(address)).thenReturn(mockCall);
 
+        // Simulate an API call failure due to network issues
         doAnswer(invocation -> {
             Callback<NominatimResponse[]> callback = invocation.getArgument(0);
             callback.onFailure(mockCall, new IOException(errorMsg));
             return null;
         }).when(mockCall).enqueue(any());
 
-        // WHEN - Appel à fetchCoordinates()
+        // WHEN - Calling fetchCoordinates()
         viewModel.fetchCoordinates(address);
         String errorMessage = LiveDataTestUtil.getValue(viewModel.getErrorLiveData());
 
-        // THEN - Vérification que l'erreur est bien retournée
+        // THEN - Verify that the correct error message is set
         assertNotNull(errorMessage);
         assertEquals("Error: " + errorMsg, errorMessage);
         verify(mapRepository).fetchCoordinatesForAddress(address);

@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Unit tests for the EditPropertyViewModel class.
+ * This class tests the update and retrieval of properties.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class EditPropertyViewModelTest {
 
@@ -37,6 +41,10 @@ public class EditPropertyViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the mocked PropertyRepository and the ViewModel instance.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -44,46 +52,49 @@ public class EditPropertyViewModelTest {
     }
 
     /**
-     * Test de mise à jour d'une propriété.
+     * Tests the successful update of a property.
+     * Ensures that the repository correctly processes the property update.
      */
     @Test
     public void updateProperty_success() {
-        // GIVEN - Une propriété existante
+        // GIVEN - An existing property object
         Property property = new Property("House", 350000, 150, 5, 2, 3,
                 "Beautiful house with garden",
                 new Address("10th Street", "Los Angeles", "CA", "90001", "USA"),
                 new ArrayList<>(), new ArrayList<>(), false, new Date(), null, "Alice Smith");
 
-        // WHEN - Appel à updateProperty()
+        // WHEN - Calling updateProperty()
         viewModel.updateProperty(property);
 
-        // THEN - Vérification que la méthode update du repository a été appelée
+        // THEN - Verify that the update method in the repository was called
         verify(propertyRepository).update(property);
     }
 
     /**
-     * Test récupération d'une propriété par son ID.
+     * Tests retrieving a property by its ID.
+     * Ensures that the repository correctly returns the expected property.
      */
     @Test
     public void getPropertyById_success() throws InterruptedException {
-        // GIVEN - Une propriété existante avec un ID spécifique
+        // GIVEN - An existing property with a specific ID
         int propertyId = 0;
         Property property = new Property("Villa", 500000, 200, 6, 3, 4,
                 "Luxury villa with swimming pool",
                 new Address("Palm Street", "Miami", "FL", "33001", "USA"),
                 new ArrayList<>(), new ArrayList<>(), false, new Date(), null, "Michael Johnson");
 
+        // Simulating the repository returning a LiveData object containing the property
         MutableLiveData<Property> expectedLiveData = new MutableLiveData<>();
         expectedLiveData.setValue(property);
-        TimeUnit.MILLISECONDS.sleep(500); // Attendre l'insertion
+        TimeUnit.MILLISECONDS.sleep(500); // Wait for the insertion
 
         when(propertyRepository.getPropertyById(propertyId)).thenReturn(expectedLiveData);
 
-        // WHEN - Appel à getPropertyById()
+        // WHEN - Calling getPropertyById()
         LiveData<Property> resultLiveData = viewModel.getPropertyById(propertyId);
         Property result = LiveDataTestUtil.getValue(resultLiveData);
 
-        // THEN - Vérification que la propriété récupérée correspond bien à l'attendue
+        // THEN - Verify that the retrieved property matches the expected one
         assertNotNull(result);
         assertEquals(propertyId, result.id);
         assertEquals("Villa", result.type);

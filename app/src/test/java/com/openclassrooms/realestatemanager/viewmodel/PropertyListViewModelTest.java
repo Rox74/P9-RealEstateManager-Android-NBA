@@ -27,6 +27,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Unit tests for the PropertyListViewModel class.
+ * This class verifies the retrieval, filtering, and reset functionality for properties.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyListViewModelTest {
 
@@ -41,11 +45,15 @@ public class PropertyListViewModelTest {
     private MutableLiveData<List<Property>> allPropertiesLiveData;
     private MutableLiveData<List<Property>> filteredPropertiesLiveData;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes the mocked PropertyRepository and ViewModel instance.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Simuler LiveData de toutes les propriétés
+        // Simulate LiveData for all properties
         allPropertiesLiveData = new MutableLiveData<>();
         filteredPropertiesLiveData = new MutableLiveData<>();
 
@@ -55,11 +63,11 @@ public class PropertyListViewModelTest {
     }
 
     /**
-     * Test `getAllProperties()` - Vérifie que toutes les propriétés sont bien retournées.
+     * Tests `getAllProperties()` - Ensures that all properties are correctly retrieved.
      */
     @Test
     public void getAllProperties_returnsAllProperties() throws InterruptedException {
-        // GIVEN - Une liste de propriétés simulée
+        // GIVEN - A simulated list of properties
         List<Property> properties = Arrays.asList(
                 new Property("House", 450000, 180, 5, 2, 3,
                         "Beautiful house with garden",
@@ -73,10 +81,10 @@ public class PropertyListViewModelTest {
 
         allPropertiesLiveData.setValue(properties);
 
-        // WHEN - Récupération de la liste via le ViewModel
+        // WHEN - Retrieving the list via ViewModel
         List<Property> result = LiveDataTestUtil.getValue(viewModel.getAllProperties());
 
-        // THEN - Vérifie que les bonnes propriétés sont retournées
+        // THEN - Verify that the correct properties are returned
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("House", result.get(0).type);
@@ -84,11 +92,11 @@ public class PropertyListViewModelTest {
     }
 
     /**
-     * Test `searchProperties()` - Vérifie que les propriétés filtrées sont bien retournées.
+     * Tests `searchProperties()` - Ensures that properties are correctly filtered based on search criteria.
      */
     @Test
     public void searchProperties_appliesFilter() throws InterruptedException {
-        // GIVEN - Une liste filtrée simulée
+        // GIVEN - A simulated filtered property list
         List<Property> filteredProperties = Collections.singletonList(
                 new Property("Penthouse", 900000, 200, 6, 3, 4,
                         "Luxury penthouse with skyline view",
@@ -101,22 +109,22 @@ public class PropertyListViewModelTest {
         when(propertyRepository.searchProperties(criteria)).thenReturn(filteredPropertiesLiveData);
         filteredPropertiesLiveData.setValue(filteredProperties);
 
-        // WHEN - Application des critères de recherche
+        // WHEN - Applying search criteria
         viewModel.searchProperties(criteria);
         List<Property> result = LiveDataTestUtil.getValue(viewModel.getFilteredProperties());
 
-        // THEN - Vérifie que seules les propriétés filtrées sont retournées
+        // THEN - Verify that only the filtered properties are returned
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Penthouse", result.get(0).type);
     }
 
     /**
-     * Test `resetSearch()` - Vérifie que toutes les propriétés sont réaffichées après un reset.
+     * Tests `resetSearch()` - Ensures that all properties are displayed again after resetting the search filter.
      */
     @Test
     public void resetSearch_displaysAllPropertiesAgain() throws InterruptedException {
-        // GIVEN - Deux scénarios : propriétés filtrées puis réinitialisation
+        // GIVEN - Two scenarios: filtered properties, then resetting
         List<Property> properties = Arrays.asList(
                 new Property("House", 450000, 180, 5, 2, 3,
                         "Beautiful house with garden",
@@ -130,11 +138,11 @@ public class PropertyListViewModelTest {
 
         allPropertiesLiveData.setValue(properties);
 
-        // WHEN - Réinitialisation de la recherche
+        // WHEN - Resetting the search filter
         viewModel.resetSearch();
         List<Property> result = LiveDataTestUtil.getValue(viewModel.getFilteredProperties());
 
-        // THEN - Vérifie que toutes les propriétés sont réaffichées
+        // THEN - Verify that all properties are displayed again
         assertNotNull(result);
         assertEquals(2, result.size());
     }

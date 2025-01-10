@@ -9,41 +9,41 @@
         android:id="@+id/edit_text_price"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Property Price ($)"
+        android:hint="@string/property_price"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/edit_text_down_payment"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Down Payment ($)"
+        android:hint="@string/down_payment"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/edit_text_interest_rate"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Annual Interest Rate (%)"
+        android:hint="@string/annual_interest_rate"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/edit_text_duration"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Loan Duration (years)"
+        android:hint="@string/loan_duration_years"
         android:inputType="number" />
 
     <Button
         android:id="@+id/button_calculate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calculate" />
+        android:text="@string/calculate" />
 
     <TextView
         android:id="@+id/text_view_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Result"
+        android:text="@string/result"
         android:textSize="18sp"
         android:paddingTop="16dp"/>
 </LinearLayout>

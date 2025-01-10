@@ -6,19 +6,19 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Champ pour le nom du point d'intérêt -->
+    <!-- Field for the point of interest name -->
     <EditText
         android:id="@+id/edit_text_poi_name"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Point of Interest Name"
+        android:hint="@string/point_of_interest_name"
         android:inputType="text" />
 
-    <!-- Champ pour le type du point d'intérêt -->
+    <!-- Field for the point of interest type -->
     <EditText
         android:id="@+id/edit_text_poi_type"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Point of Interest Type"
+        android:hint="@string/point_of_interest_type"
         android:inputType="text" />
 </LinearLayout>

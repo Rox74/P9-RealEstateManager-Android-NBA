@@ -14,7 +14,7 @@
             android:id="@+id/edit_text_min_price"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Min Price ($)"
+            android:hint="@string/min_price"
             android:inputType="numberSigned|numberDecimal" />
 
         <!-- Max Price -->
@@ -22,7 +22,7 @@
             android:id="@+id/edit_text_max_price"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Max Price ($)"
+            android:hint="@string/max_price"
             android:inputType="numberSigned|numberDecimal" />
 
         <!-- Min Surface -->
@@ -30,7 +30,7 @@
             android:id="@+id/edit_text_min_surface"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Min Surface (m²)"
+            android:hint="@string/min_surface_m"
             android:inputType="numberSigned|numberDecimal" />
 
         <!-- Max Surface -->
@@ -38,7 +38,7 @@
             android:id="@+id/edit_text_max_surface"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Max Surface (m²)"
+            android:hint="@string/max_surface_m"
             android:inputType="numberSigned|numberDecimal" />
 
         <!-- Min Rooms -->
@@ -46,7 +46,7 @@
             android:id="@+id/edit_text_min_rooms"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Min Rooms"
+            android:hint="@string/min_rooms"
             android:inputType="number" />
 
         <!-- Min Photos -->
@@ -54,7 +54,7 @@
             android:id="@+id/edit_text_min_photos"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Min Photos"
+            android:hint="@string/min_photos"
             android:inputType="number" />
 
         <!-- Location -->
@@ -62,7 +62,7 @@
             android:id="@+id/edit_text_location"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Location (City, State)"
+            android:hint="@string/location_city_state"
             android:inputType="text" />
 
         <!-- Button Layout -->
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Search" />
+                android:text="@string/search" />
 
             <!-- Cancel Button -->
             <Button
@@ -86,7 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="@string/cancel" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

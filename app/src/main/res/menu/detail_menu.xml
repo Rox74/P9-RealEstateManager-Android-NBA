@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Bouton pour modifier la propriété -->
+    <!-- Button to edit the property -->
     <item
         android:id="@+id/action_edit_property"
-        android:title="Edit Property"
+        android:title="@string/edit_property"
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom" />
 </menu>

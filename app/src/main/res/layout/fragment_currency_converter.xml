@@ -9,10 +9,10 @@
         android:id="@+id/edit_text_amount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Enter amount"
+        android:hint="@string/enter_amount"
         android:inputType="number" />
 
-    <!-- Sélecteur pour choisir la conversion -->
+    <!-- Selector to choose the conversion -->
     <Spinner
         android:id="@+id/spinner_currency"
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:id="@+id/text_view_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Result"
+        android:text="@string/result"
         android:textSize="18sp"
         android:padding="8dp"
         android:gravity="center" />
@@ -32,7 +32,7 @@
         android:id="@+id/button_convert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Convert"
+        android:text="@string/convert"
         android:padding="8dp"
         android:gravity="center" />
 </LinearLayout>

@@ -1,24 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Bouton pour ajouter une propriété -->
+    <!-- Button to add a property -->
     <item
         android:id="@+id/action_add_property"
-        android:title="Add Property"
+        android:title="@string/add_property"
         android:icon="@drawable/ic_add"
         app:showAsAction="ifRoom" />
 
-    <!-- Bouton pour afficher le simulateur de prêt -->
+    <!-- Button to display the loan simulator -->
     <item
         android:id="@+id/action_loan_simulator"
-        android:title="Loan Simulator"
+        android:title="@string/loan_simulator"
         android:icon="@drawable/ic_loan"
         app:showAsAction="never"/>
 
-    <!-- Bouton pour la conversion Dollar ↔ Euro -->
+    <!-- Button for Dollar ↔ Euro conversion -->
     <item
         android:id="@+id/action_currency_converter"
-        android:title="Currency Converter"
+        android:title="@string/currency_converter"
         android:icon="@drawable/ic_currency"
         app:showAsAction="never"/>
 

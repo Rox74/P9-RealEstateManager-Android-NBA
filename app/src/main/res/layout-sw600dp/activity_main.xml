@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Conteneur pour la liste des propriétés -->
+    <!-- Container for the property list -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
@@ -17,7 +17,7 @@
         app:layout_constraintWidth_percent="0.3"
         tools:layout="@layout/fragment_property_list" />
 
-    <!-- Conteneur pour les détails des propriétés -->
+    <!-- Container for the property details -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/property_detail_container"
         android:layout_width="0dp"

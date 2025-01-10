@@ -1,17 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Bouton pour la recherche -->
+    <!-- Button for search -->
     <item
         android:id="@+id/action_search"
-        android:title="Search"
+        android:title="@string/search"
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom" />
 
-    <!-- Bouton pour réinitialiser la recherche -->
+    <!-- Button to reset the search -->
     <item
         android:id="@+id/action_reset_search"
-        android:title="Reset Search"
+        android:title="@string/reset_search"
         android:icon="@drawable/ic_reset"
         app:showAsAction="ifRoom" />
 </menu>

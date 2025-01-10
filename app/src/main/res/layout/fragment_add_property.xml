@@ -11,65 +11,65 @@
         android:divider="?android:attr/dividerVertical"
         android:showDividers="middle">
 
-        <!-- Type de propriété (Obligatoire) -->
+        <!-- Property type (Required) -->
         <EditText
             android:id="@+id/edit_text_type"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* Type of Property"
+            android:hint="@string/type_of_property"
             android:inputType="textCapWords" />
 
-        <!-- Prix (Obligatoire) -->
+        <!-- Price (Required) -->
         <EditText
             android:id="@+id/edit_text_price"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* Price ($)"
+            android:hint="@string/price"
             android:inputType="numberDecimal" />
 
-        <!-- Surface (Obligatoire) -->
+        <!-- Surface area (Required) -->
         <EditText
             android:id="@+id/edit_text_surface"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* Surface (m²)"
+            android:hint="@string/surface_m"
             android:inputType="numberDecimal" />
 
-        <!-- Nombre de pièces (Optionnel) -->
+        <!-- Number of rooms (Optional) -->
         <EditText
             android:id="@+id/edit_text_rooms"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Number of Rooms"
+            android:hint="@string/number_of_rooms"
             android:inputType="number" />
 
-        <!-- Nombre de salles de bains (Optionnel) -->
+        <!-- Number of bathrooms (Optional) -->
         <EditText
             android:id="@+id/edit_text_bathrooms"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Number of Bathrooms"
+            android:hint="@string/number_of_bathrooms"
             android:inputType="number" />
 
-        <!-- Nombre de chambres (Optionnel) -->
+        <!-- Number of bedrooms (Optional) -->
         <EditText
             android:id="@+id/edit_text_bedrooms"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Number of Bedrooms"
+            android:hint="@string/number_of_bedrooms"
             android:inputType="number" />
 
-        <!-- Description (Optionnelle) -->
+        <!-- Description (Optional) -->
         <EditText
             android:id="@+id/edit_text_description"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Description"
+            android:hint="@string/description"
             android:inputType="textMultiLine"
             android:gravity="top"
             android:minLines="3" />
 
-        <!-- Adresse complète -->
+        <!-- Full address -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -80,51 +80,51 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Address"
+            android:text="@string/address"
             android:textStyle="bold"
             android:textSize="16sp" />
 
-        <!-- Rue (Obligatoire) -->
+        <!-- Street (Required) -->
         <EditText
             android:id="@+id/edit_text_street"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* Street Address"
+            android:hint="@string/street_address"
             android:inputType="textCapWords" />
 
-        <!-- Ville (Obligatoire) -->
+        <!-- City (Required) -->
         <EditText
             android:id="@+id/edit_text_city"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* City"
+            android:hint="@string/city"
             android:inputType="textCapWords" />
 
-        <!-- État (Optionnel) -->
+        <!-- State (Optional) -->
         <EditText
             android:id="@+id/edit_text_state"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="State"
+            android:hint="@string/state"
             android:inputType="textCapWords" />
 
-        <!-- Code postal (Optionnel) -->
+        <!-- Zip Code (Optional) -->
         <EditText
             android:id="@+id/edit_text_zip_code"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Zip Code"
+            android:hint="@string/zip_code"
             android:inputType="number" />
 
-        <!-- Pays (Optionnel) -->
+        <!-- Country (Optional) -->
         <EditText
             android:id="@+id/edit_text_country"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Country"
+            android:hint="@string/country"
             android:inputType="textCapWords" />
 
-        <!-- Agent immobilier (Obligatoire) -->
+        <!-- Real estate agent (Required) -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -136,10 +136,10 @@
             android:id="@+id/edit_text_agent_name"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="* Agent Name"
+            android:hint="@string/agent_name"
             android:inputType="textCapWords" />
 
-        <!-- Statut du bien -->
+        <!-- Property status -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -150,7 +150,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Property Status"
+            android:text="@string/property_status"
             android:textStyle="bold"
             android:textSize="16sp" />
 
@@ -163,7 +163,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Available"
+                android:text="@string/available"
                 android:textSize="14sp"
                 android:layout_marginEnd="8dp" />
 
@@ -175,16 +175,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sold"
+                android:text="@string/sold"
                 android:textSize="14sp"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- Date d'entrée sur le marché -->
+        <!-- Market entry date -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Market Date"
+            android:text="@string/market_date"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="12dp" />
@@ -193,13 +193,13 @@
             android:id="@+id/button_select_market_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Market Date" />
+            android:text="@string/select_market_date" />
 
         <TextView
             android:id="@+id/text_selected_market_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No date selected"
+            android:text="@string/no_date_selected"
             android:textSize="14sp"
             android:padding="8dp"
             android:gravity="center"
@@ -207,7 +207,7 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="8dp" />
 
-        <!-- Date de vente (Visible uniquement si vendu) -->
+        <!-- Sold date (Visible only if sold) -->
         <LinearLayout
             android:id="@+id/layout_sold_date"
             android:layout_width="match_parent"
@@ -218,7 +218,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sold Date"
+                android:text="@string/sold_date"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginTop="12dp" />
@@ -227,13 +227,13 @@
                 android:id="@+id/button_select_sold_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Sold Date" />
+                android:text="@string/select_sold_date" />
 
             <TextView
                 android:id="@+id/text_selected_sold_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No date selected"
+                android:text="@string/no_date_selected"
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:gravity="center"
@@ -253,7 +253,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Photos (Optional)"
+            android:text="@string/photos_optional"
             android:textStyle="bold"
             android:textSize="16sp" />
 
@@ -267,9 +267,9 @@
             android:id="@+id/button_add_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Photo" />
+            android:text="@string/add_photo" />
 
-        <!-- Points d'intérêt -->
+        <!-- Points of interest -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -280,7 +280,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Points of Interest (Optional)"
+            android:text="@string/points_of_interest_optional"
             android:textStyle="bold"
             android:textSize="16sp" />
 
@@ -294,9 +294,9 @@
             android:id="@+id/button_add_point_of_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Point of Interest" />
+            android:text="@string/add_point_of_interest" />
 
-        <!-- Bouton de sauvegarde -->
+        <!-- Save button -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -308,7 +308,7 @@
             android:id="@+id/button_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Property"
+            android:text="@string/save_property"
             android:textStyle="bold"
             android:textSize="16sp"
             android:backgroundTint="@android:color/black"
